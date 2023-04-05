@@ -1,10 +1,45 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import watch from '../images/watch.jpg';
 import { AiFillDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import Container from '../components/Container';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteProductCart, getUserCart, updateProductCart } from '../features/user/userSlice';
+import { userCart } from '../../../Backend/controller/useCtrl';
 
 const Cart = () => {
+    const dispatch=useDispatch();
+    const [productUpdateDetail,setProductUpdateDetail]=useState(null)
+    const [totalAmount,setTotalAmount]=useState(null);
+    
+    const userCartState=useSelector(state=>state.user.cartProducts);
+    // console.log(userCartState)
+    // console.log(`quantity${quantity}`)
+
+    useEffect(()=>{
+        dispatch(getUserCart());
+    },[])
+    useEffect(()=>{
+        if(productUpdateDetail!==null){
+            dispatch(updateACartProduct({cartItemId:productUpdateDetail?.cartItemId,quantity:productUpdateDetail?.quantity}))
+    }},[productUpdateDetail])
+    const deleteACartProduct= async(id)=>{
+        dispatch(deleteProductCart(id))
+        await dispatch(getUserCart());
+    }
+    const updateACartProduct= async(productUpdateDetail)=>{
+        dispatch(updateProductCart({cartItemId:id,quantity}))
+        await dispatch(getUserCart())
+    }
+    useEffect(()=>{
+        let sum=0;
+        for (let index = 0; index < array.length; index++) {
+            sum=sum+(Number(userCartState[index].quantity)*userCartState[index].price)
+            setTotalAmount(sum)
+            // console.log()
+            
+        }
+    },[userCartState])
     return (
         <>
             <Container class1="cart-wrapper home-wrapper-2 py-5">
@@ -16,32 +51,49 @@ const Cart = () => {
                                 <h4 className="cart-col-3">Quantity</h4>
                                 <h4 className="cart-col-4">Total</h4>
                             </div>
-                            <div className="cart-data py-3 mb-2 d-flex justify-content-between align-items-center">
-                                <div className="cart-col-1 gap-15 d-flex align-items-center">
-                                    <div>
-                                        <img src={watch} alt="product image" className="w-25" />
+                            {
+                                userCartState && userCartState?.map((item,index)=>{
+                                    return (
+                                        <div key={index} className="cart-data py-3 mb-2 d-flex justify-content-between align-items-center">
+                                        <div className="cart-col-1 gap-15 d-flex align-items-center">
+                                            <div>
+                                                <img src={watch} alt="product image" className="w-25" />
+                                            </div>
+                                            <div className="w-75">
+                                                <p>
+                                                    {item?.productId.title}
+                                                </p>
+                                                <p className="d-flex gap-3">Color:
+                                               <ul className='colors ps-0'>
+                                                   <li style={{backgroundColor:item?.color.title}}></li>
+
+                                                   </ul> 
+                                                </p>
+
+                                                <p className="size"></p>
+                                            </div>
+                                        </div>
+                                        <div className="cart-col-2">
+                                            <h5 className="price">${item?.price}</h5>
+                                        </div>
+                                        <div className="cart-col-3 d-flex align-items-center gap-15">
+                                            <div>
+                                                <input className="form-control" type='number' name='' id='' min={1} max={10} value={productUpdateDetail.quantity ? productUpdateDetail.quantity :item?.quantity} onChange={(e)=>{setProductUpdateDetail({cartItemId:item?_id})
+                                                }}/>
+                                            </div>
+                                            <div>
+                                                <AiFillDelete onClick={()=>deleteACartProduct(item?._id)} className='text-danger' />
+                                            </div>
+                                        </div>
+                                        <div className="cart-col-4">
+                                            <h5 className="price">${item?.price* item?.quantity}</h5>
+
+                                        </div>
                                     </div>
-                                    <div className="w-75">
-                                        <h5 className="title"></h5>
-                                        <p className="color"></p>
-                                        <p className="size"></p>
-                                    </div>
-                                </div>
-                                <div className="cart-col-2">
-                                    <h5 className="price">$100</h5>
-                                </div>
-                                <div className="cart-col-3 d-flex align-items-center gap-15">
-                                    <div>
-                                        <input className="form-control" type='number' name='' id='' min={1} max={10} />
-                                    </div>
-                                    <div>
-                                        <AiFillDelete className='text-danger' />
-                                    </div>
-                                </div>
-                                <div className="cart-col-4">
-                                    <h5 className="price">$100</h5>
-                                </div>
-                            </div>
+                                    )
+                                })
+                            }
+                         
                             {/* <div className="cart-data py-3 mb-2 d-flex justify-content-between align-items-center">
                                 <div className="cart-col-1 gap-15 d-flex align-items-center">
                                     <div>
@@ -72,11 +124,16 @@ const Cart = () => {
                         <div className="col-12 py-2">
                             <div className="d-flex justify-content-between align-items-baseline">
                             <Link to="/product"className='button'>Continue to Shopping</Link>
-                            <div className="d-flex flex-column align-items-end">
-                                <h4>Subtotal:$1000</h4>
-                                <p>Taxes and shipping calculated at checkout</p>
-                                <Link to='/checkout' className='button'> Checkout</Link>
-                            </div>
+                            {
+                                    (totalAmount !==null  || totalAmount !==0 )&&   <div className="d-flex flex-column align-items-end">
+
+                                    <h4>Subtotal:${totalAmount}</h4>
+                                    <p>Taxes and shipping calculated at checkout</p>
+                                    <Link to='/checkout' className='button'> Checkout</Link>
+                                   
+                                </div>
+                                }
+                          
                         </div>
                         </div>
                     </div>

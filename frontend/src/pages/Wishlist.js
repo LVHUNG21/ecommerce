@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { getWishlist } from '../../../Backend/controller/useCtrl';
 import Container from '../components/Container';
-
+import { useDispatch, useSelector } from 'react-redux';
 const Wishlist = () => {
+    const dispatch=useDispatch();
+    useEffect(()=>{
+        getWishlistFromDb();
+
+    })
+  const wistlistState=useSelector((state)=>{
+      state?.auth?.wishlist?.wishlist
+  })
   return (
   <Container class1="wishlist-wrapper home-wrapper-2 py-5">
         <div className="row">

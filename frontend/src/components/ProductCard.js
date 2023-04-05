@@ -9,6 +9,7 @@ import watch2 from '../images/watchrl.jpg';
 import addcart from '../images/add-cart.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import view from '../images/view.svg';
+import { addToWishList } from '../features/product/productSlice';
 const ProductCard = (props) => {
     const  {grid,data}  = props;
     let location = useLocation();
@@ -18,14 +19,14 @@ const ProductCard = (props) => {
     }
     // alert(location);
     return (
+
             <>
             {
                 data?.map((item,index)=>{
                     return (
-                        key={index},
-                        <div className={`${location.pathname == "/product" ? `col-${grid}` : "col-3"}`}>
+                        <div key ={index} className={`${location.pathname == "/product" ? `col-${grid}` : "col-3"}`}>
 
-                        <Link to={`${location.pathname=="/" ? "product/:id": location.pathname== "/product/:id" ? "product/:id" :":id"}`} className="product-card position-relative">
+                        <div className="product-card position-relative">
                             <div className="wishlist-icon position-absolute">
                                 <button className='border-0 bg-transparent 'onClick={(e)=>{
                                     addToWishListt(item?._id)
@@ -60,15 +61,15 @@ const ProductCard = (props) => {
                                     <button  className="border-0 bg-transparent">
                                         <img src={prodcompare} alt='compare' />
                                     </button>
-                                    <button className="border-0 bg-transparent">
+                                    <Link to={'/product/'+item?._id} className="border-0 bg-transparent">
                                         <img src={view} alt='view' />
-                                    </button>
+                                    </Link>
                                     <button className="border-0 bg-transparent">
                                         <img src={addcart} alt='addcart' />
                                     </button>
                                 </div>
                             </div>
-                        </Link>
+                        </div>
                     </div>
                     )
                 })

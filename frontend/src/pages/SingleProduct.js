@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ReactImageZoom from 'react-image-zoom';
 import ReactStars from 'react-rating-stars-component';
@@ -8,9 +8,47 @@ import ProductCard from '../components/ProductCard'
 import watch from "../images/watch.jpg"
 import Container from '../components/Container';
 import Color from '../components/Color';
-
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify'
+import { getAProduct } from '../features/product/productSlice';
+import { addProductToCart, getUserCart } from '../features/user/userSlice';
+import {useNavigate} from 'react-router-dom'
 const SingleProduct = () => {
-    const props = { width: 400, height: 500, zoomWidth: 500, img: 'https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&amp;dl=pexels-fernando-arcos-190819.jpg../images/headphone.jpg' };
+    const [color,setColor]=useState(null)
+    const [quantity,setQuantity]=useState(1)
+    const [alreadyAdded,setalreadyAdded]=useState(false)
+    const location=useLocation();
+    console.log(quantity);
+console.log(location)
+    const getProductId=location.pathname.split('/')[2]
+    const dispatch=useDispatch();
+    const productState=useSelector(state=>state.product.singleproduct)
+    const cartState=useSelector(state=>state.user.cartProducts)
+    const navigate=useNavigate();
+    useEffect(()=>{
+        dispatch(getAProduct(getProductId));
+        dispatch(getUserCart())
+    })
+    useEffect(()=>{
+        for (let index = 0; index < cartState.length; index++) {
+           if(getProductId===cartState[index]?.productId?._id){
+               setalreadyAdded(true)
+           } 
+           
+        }
+    })
+    const uploadCart=()=>{
+        if(color===null)
+        {
+            toast.error('please Choose Color')
+            return false 
+        }else{
+            dispatch(addProductToCart({productId:productState?._id,quantity,color,price:productState?.price}))
+            navigate('/cart')
+        }
+
+    }
+    const props = { width: 400, height: 500, zoomWidth: 500, img:productState?.images[0]?.url ? productState?.images[0].url : 'https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&amp;dl=pexels-fernando-arcos-190819.jpg../images/headphone.jpg' }
 
     const [orderedProduct, setorderProduct] = useState(true);
     const copyToClipboard = (text) => {
@@ -33,10 +71,12 @@ const SingleProduct = () => {
                                 </div>
                             </div>
                             <div className="other-product-images d-flex flex-wrap gap-15">
-                                <div><img src={watch} alt="" className='img-fluid' /></div>
-                                <div><img src={watch} alt="" className='img-fluid' /></div>
-                                <div><img src={watch} alt="" className='img-fluid' /></div>
-                                <div><img src={watch} alt="" className='img-fluid' /></div>
+                                {productState?.images.map((item,index)=>{
+                                    return (
+
+                                    <div><img src={item?.url} alt="" className='img-fluid' /></div>
+                                    )
+                                })}
                             </div>
                         </div>
                     <div className="col-6">
@@ -44,12 +84,12 @@ const SingleProduct = () => {
                             <div className="border-bottom">
 
                                 <h3 className="title">
-                                    Kids Headphone Builk 10 Pack Multi Colored For Students
+                                {productState?.title}
                                 </h3>
                             </div>
                             <div className="border-bottom py-3">
                                 <p className="price">
-                                    $100
+                                ${productState?.price}
                                 </p>
                                 <div className="d-flex align-items-center gap-10">
                                     <ReactStars
@@ -57,7 +97,7 @@ const SingleProduct = () => {
                                         // onChange={ratingChanged}
                                         size={24}
                                         edit={false}
-                                        value={3}
+                                        value={productState?.totalratings}
 
                                         activeColor="#ffd700"
                                     />,
@@ -75,10 +115,10 @@ const SingleProduct = () => {
                                     </div>
                                     <div className="d-flex gap-10 align-items-center my-2" >
                                         <h3 className='product-heading'>Brand:</h3>
-                                        <p className="product-data">Havells</p>
+                                        <p className="product-data">{productState?.brand}</p>
                                     </div>
                                     <div className="d-flex gap-10 align-items-center my-2" >
-                                        <h3 className='product-heading'>Category:</h3>
+                                        <h3 className='product-heading'>{productState?.category}</h3>
                                         <p className="product-data">Watch</p>
                                     </div>
                                     <div className="d-flex gap-10 align-items-center my-2" >
@@ -99,21 +139,27 @@ const SingleProduct = () => {
                                     </div>
                                     <div className="d-flex gap-10 flex-column mt-2 mb-3" >
                                         <h3 className='product-heading'>Color:</h3>
-                                        <Color></Color>
+                                        <Color setColor={setColor} colorData={productState?.color}/>
                                     </div>
                                     <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3" >
-                                        <h3 className='product-heading'>Quantity:</h3>
+                                        {
+                                                alreadyAdded ===false && <>
+                                                   <h3 className='product-heading'>Quantity:</h3>
                                         <div className="">
-                                            <input type="number" className='form-control' name="" style={{ "width": "70px" }} min={1} max={10} id="" />
+                                            <input type="number" className='form-control' name="" onChange={(e)=>setQuantity(e.target.value)} value={quantity} style={{ "width": "70px" }} min={1} max={10} id="" />
                                         </div>
-                                        <div className='d-flex align-items-center gap-30 ms-5'>
-                                            <button className='button border-0' type='submit'>
-                                                Add to Cart
+                                        <div className={alreadyAdded? 'ms-0':'ms-5'+'d-flex align-items-center gap-30 ms-5'}>
+                                            <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' className='button border-0' onClick={()=>{alreadyAdded? navigate('/cart'):uploadCart()}} type='button' >
+                                            {alreadyAdded ? 'GO To Cart' :'Add to cart'}
                                             </button>
                                             <button className='button singup'>
                                                 Buy It Now
                                             </button>
                                         </div>
+                                                </>
+
+                                        }
+                                     
                                     </div>
                                     <div className="d-flex align-items-center gap-15">
                                         <div>
@@ -129,7 +175,7 @@ const SingleProduct = () => {
                                     </div>
                                     <div className="d-flex gap-10 align-items-center my-3" >
                                         <h3 className='product-heading'>Product Link</h3>
-                                        <a href="javascript:void(0)" onClick={ ()=>{copyToClipboard("https://thanglong.edu.vn/")}}>Copy Product Link</a>
+                                        <a href="javascript:void(0)" onClick={ ()=>{copyToClipboard(window.location.href)}}>Copy Product Link</a>
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +188,7 @@ const SingleProduct = () => {
                             <div className="col-12">
                                 <h4 className="Description"></h4>
                                 <div className='bg-white p-3'>
-                                    <p> sdfsdfsdfskdfhkjsdhfklshfkl</p>
+                                    <p dangerouslySetInnerHTML={{__html:productState?.description}}> </p>
                                 </div>
                             </div>
                        </div>
@@ -208,7 +254,7 @@ const SingleProduct = () => {
                                     <div className="reviews mt-3">
                                         <div className="review">
                                             <div className='d-flex gap-10 align-items-center'>
-                                                <h6 className="mb-0"> NavDeep</h6>
+                                                <h6 className="mb-0"> fuhjs</h6>
                                                 <ReactStars
                                                     count={5}
                                                     // onChange={ratingChanged}

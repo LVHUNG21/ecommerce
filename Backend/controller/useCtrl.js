@@ -301,37 +301,14 @@ const saveAddress=asyncHandler(async(req,res,next)=>{
 })
 
 const userCart=asyncHandler(async(req,res,next)=>{ 
-    const {cart}=req.body;
+    const {productId,color,quantity,price}=req.body;
     const {_id}=req.user;
     console.log(_id);
 validateMongodbId(_id);
  try{
-    let products=[];
-    const user=await User.findById(_id);
-    // console.log(user);
-    //check if user already have product in cart
-    const alreadyExistCart=await Cart.findOne({
-        orderby:user._id
-    });
-    console.log(alreadyExistCart);
-    if(alreadyExistCart){
-        alreadyExistCart.remove();
-    }
-    for(let i=0;i<cart.length;i++){
-            let object={};
-            object.product=cart[i]._id;
-            object.count=cart[i].count;
-            object.color=cart[i].color;
-            let getPrice = await Product.findById(cart[i]._id).select("price").exec();
-            object.price=getPrice.price;
-            products.push(object);
-    }
-    let cartTotal=0;
-    for(let i=0;i<products.length;i++){
-        cartTotal=cartTotal+products[i].price*products[i].count;
-    }
     let newCart=await new Cart({
-        products,cartTotal,orderby:user?._id
+        userId:_id,productId,
+        color,price,quantity
     }).save();
     res.json(newCart);
     console.log(products);
@@ -344,12 +321,40 @@ const getUserCart=asyncHandler(async(req,res)=>{
     const {_id}=req.user;
     validateMongodbId(_id);
     try{
-        const cart=await Cart.findOne({orderby:_id}).populate("products.product");
+        const cart=await Cart.find({userId:_id}).populate("productID").populate("color");
         res.json(cart);
     }catch(error){
         throw new Error(error);
     }
 })
+const removeProductFromCart =asyncHandler(async(req,res)=>{
+    const {_id}=req.user;
+    const {cartItemId} =req.params;
+    validateMongodbId(_id);
+    try{
+        const deleteProductFromCart=await Cart.deleteOne({userId:_id,_id:cartItemId})
+        res.json(deleteProductFromCart);
+    }catch(error){
+        throw new Error(error);
+    }
+
+
+})
+const updateProductQuantityFromCart=asyncHandler(
+    async(req,res)=>{
+        const {_id}=req.user;
+        const {cartItemId,newQuantity} =req.params;
+        validateMongodbId(_id);
+        try{
+            const cartItem=await Cart.findOne({userId:_id,_id:cartItemId})
+            cartItem.quantity=newQuantity,
+            cartItem.save();
+            res.json(cartItem);
+        }catch(error){
+            throw new Error(error);
+        }
+    }
+)
 const emptyCart=asyncHandler(async(req,res)=>{
     const {_id}=req.user;
     validateMongodbId(_id);
@@ -481,4 +486,4 @@ const updateOrderStatus=asyncHandler(async(req,res)=>{
         throw new Error(error);
     }
 })
-module.exports = {createOrder,getlOrderByUserId,applyCoupon,emptyCart,getAllOrders, createUser,getWishlist, userCart,loginAdmin,saveAddress,loginUserCtrl, getallUser, getaUser, deleteaUser, updatedaUser, blockUser,forgotPasswordToken, unblockUser,handleRefreshToken,logout,updatePassword,forgotPasswordToken,resetPassword,getUserCart,getOrders,updateOrderStatus};
+module.exports = {removeProductFromCart,updateProductQuantityFromCart,createOrder,getlOrderByUserId,applyCoupon,emptyCart,getAllOrders, createUser,getWishlist, userCart,loginAdmin,saveAddress,loginUserCtrl, getallUser, getaUser, deleteaUser, updatedaUser, blockUser,forgotPasswordToken, unblockUser,handleRefreshToken,logout,updatePassword,forgotPasswordToken,resetPassword,getUserCart,getOrders,updateOrderStatus};

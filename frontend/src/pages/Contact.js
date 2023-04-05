@@ -2,8 +2,32 @@ import React from 'react'
 import {AiOutlineHome,AiOutlineMail} from 'react-icons/ai';
 import {BiPhoneCall,BiInfoCircle} from 'react-icons/bi';
 import Container from '../components/Container';
+import * as yup from 'yup'
+import {useFormik} from 'formik'
+import { useDispatch } from 'react-redux';
+import { createQuery } from '../features/contact/contactSlice';
+let contactSchema = yup.object({
+  name:yup.string().required('name is required'),
+  email:yup.string().nullable().email('email should be valid').required('Email is required'),
+  mobile:yup.string().default('').nullable().required('moblie is required'),
+  comments:yup.string().default('').nullable().required('comment is required')
+});
 
 const Contact = () => {
+  const dispatch=useDispatch()
+  const formik= useFormik({
+     initialValues: {
+       name:'',
+       mobile:'',
+       email: '',
+       comments:'',
+     },
+     validationSchema:contactSchema,
+     onSubmit: values => {
+       dispatch(createQuery(values))  
+       alert(JSON.stringify(values, null, 2));
+     }})
+
   return (
   <>
     <Container class1="contact-wrapper py-5 home-wrapper-2">
@@ -18,18 +42,42 @@ const Contact = () => {
             <h3 className='contact-title'>
               Contact
             </h3>
-            <form action="" className='d-flex flex-column gap-15'> 
+            <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'> 
               <div>
-                <input type="text" className="form-control" placeholder='Name'/>
+                <input type="text" className="form-control" placeholder='Name' name='name' onChange={formik.handleChange('name')} onBlur={formik.handleBlur('name')} value={formik.values.name}/>
+                  <div className='errors'>
+                    {
+                      formik.touched.name &&formik.errors.name
+                    }
+
+                  </div>
               </div>
               <div>
-                <input type="text" className="form-control" placeholder='Email'/>
+                <input type="text" className="form-control" placeholder='email' name='email' onChange={formik.handleChange('email')} onBlur={formik.handleBlur('email')} value={formik.values.email}/>
+                  <div className='errors'>
+                    {
+                      formik.touched.email&&formik.errors.email
+                    }
+
+                  </div>
               </div>
               <div>
-                <input type="tel" className="form-control" placeholder='Mobile Num'/>
+                <input type="text" className="form-control" placeholder='mobile' name='mobile' onChange={formik.handleChange('mobile')} onBlur={formik.handleBlur('mobile')} value={formik.values.mobile}/>
+                  <div className='errors'>
+                    {
+                      formik.touched.mobile &&formik.errors.mobile
+                    }
+
+                  </div>
               </div>
               <div>
-                <textarea name="" id="" placeholder='Comments' className="w-100 form-control" cols="30" row="4"/>
+                <textarea name="comments" id="" placeholder='Comments' onChange={formik.handleChange('comments')} onBlur={formik.handleBlur('comments')} value={formik.values.comments} className="w-100 form-control" cols="30" row="4"/>
+                <div className='errors'>
+                    {
+                      formik.touched.comments &&formik.errors.comments
+                    }
+
+                  </div>
               </div>
               <div>
                 <button className="button border-0">
