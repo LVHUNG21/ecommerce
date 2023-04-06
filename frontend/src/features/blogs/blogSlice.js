@@ -1,12 +1,14 @@
 
+
+
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { getAllOrders } from '../../../../Backend/controller/useCtrl';
-import { blogService } from './productService';
+import { productService } from './productService';
 // import thunk from "redux-thunk";
-import { userService } from "./userService";
+import { blogService } from './blogService';
 export const getAllBlogs= createAsyncThunk(
-    'blog/get',
+    'blogs/get',
     async (thunkAPI) => {
         try {
             return blogService.getBlogs();
@@ -17,7 +19,18 @@ export const getAllBlogs= createAsyncThunk(
         }
     }
   )
-
+export const getABlog= createAsyncThunk(
+    'blog/get',
+    async (id,thunkAPI) => {
+        try {
+            return blogService.getBlogs(id);
+            
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error)
+            
+        }
+    }
+  )
 const blogState={
         blog:'',
       isError:false,
@@ -28,10 +41,10 @@ const blogState={
 export const blogSlice=createSlice({
 
     name:"blog"
-    ,initialState:blogState
+    ,initialState:productState
     ,reducers:{},
     extraReducers:(builder)=>{
-        builder.addCase(getAllBlogs.pending,state=>{
+        builder.addCase(getAllProducts.pending,state=>{
             state.isLoading=true;
        
     }).addCase(getAllBlogs.fulfilled,(state,action)=>{
@@ -46,9 +59,22 @@ export const blogSlice=createSlice({
         state.isLoading=false;
         state.isSuccess=false;
         state.message=action.error
-    })
+    }).addCase(getABlog.pending,state=>{
+        state.isLoading=true;
+   
+}).addCase(getABlog.fulfilled,(state,action)=>{
+        state.isLoading=false;
+        state.isError=false;
+        state.isSuccess=true;
+        state.singleblog=action.payload;
 
-
+})
+.addCase(getABlog.rejected,(state,action)=>{
+    state.isError=true;
+    state.isLoading=false;
+    state.isSuccess=false;
+    state.message=action.error
+})
 }
     
 })
