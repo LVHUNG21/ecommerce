@@ -1,10 +1,6 @@
 
-
-
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { getAllOrders } from '../../../../Backend/controller/useCtrl';
-import { productService } from './productService';
 // import thunk from "redux-thunk";
 import { blogService } from './blogService';
 export const getAllBlogs= createAsyncThunk(
@@ -41,10 +37,10 @@ const blogState={
 export const blogSlice=createSlice({
 
     name:"blog"
-    ,initialState:productState
+    ,initialState:blogState
     ,reducers:{},
     extraReducers:(builder)=>{
-        builder.addCase(getAllProducts.pending,state=>{
+        builder.addCase(getAllBlogs.pending,state=>{
             state.isLoading=true;
        
     }).addCase(getAllBlogs.fulfilled,(state,action)=>{

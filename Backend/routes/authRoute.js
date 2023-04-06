@@ -7,6 +7,7 @@ router.post('/register',createUser);
 router.post('/login',loginUserCtrl);
 router.post('/admin-login',loginAdmin);
 router.post('/cart',authMiddleware,userCart);
+router.get("/cart",authMiddleware,getUserCart);
 // router.post('/edit-user',authMiddleware,updatedaUser)
 router.post('/cart/applycoupon',authMiddleware,applyCoupon);
 router.post('/cart/cash-order',authMiddleware,createOrder);
@@ -21,11 +22,11 @@ router.put("/reset-password/:token",resetPassword);
 
 router.put("/order/update-order/:id",authMiddleware,isAdmin,updateOrderStatus);
 router.get("/:id",authMiddleware,isAdmin,getaUser);
-router.get("/wishlist",authMiddleware,getWishlist);
-router.get("/cart",authMiddleware,getUserCart);
+// router.get("/wishlist",authMiddleware,getWishlist);
+
 router.delete("/empty-cart",authMiddleware,emptyCart);
 router.delete("/delete-product-cart/:cartItemId",authMiddleware,removeProductFromCart);
-router.update("/updata-product-cart/:cartItemId/:newQuantity",authMiddleware,updateProductQuantityFromCart);
+router.put("/updata-product-cart/:cartItemId/:newQuantity",authMiddleware,updateProductQuantityFromCart);
 router.delete("/:id",deleteaUser);
 router.get("/logout",logout);
 

@@ -1,10 +1,8 @@
 
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { getAllOrders } from '../../../../Backend/controller/useCtrl';
 import { productService } from './productService';
 // import thunk from "redux-thunk";
-import { userService } from "./userService";
 export const getAllProducts= createAsyncThunk(
     'product/get',
     async (thunkAPI) => {
@@ -19,7 +17,7 @@ export const getAllProducts= createAsyncThunk(
   )
 export const getAProduct= createAsyncThunk(
     'product/getAProduct',
-    async (id,thunkAPI) => {
+    async (id,thunkAPI) => { 
         try {
             return productService.getSingleProduct(id);
             

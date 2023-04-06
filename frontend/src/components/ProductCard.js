@@ -35,8 +35,9 @@ const ProductCard = (props) => {
                                 </button>
                             </div>
                             <div className="product-image">
-                                <img src={item?.images[0].url} className='img-fluid d-block mx-auto' alt='product image' width={160} />
-                                <img src={watch2} className='img-fluid d-block mx-auto' width={160} alt='product image' />
+                                <img src={item?.images[index]?.url} className='img-fluid mx-auto' alt='product-image' width={160} />
+
+                                <img src={watch2} className='img-fluid  mx-auto' width={160} alt='product image' />
                             </div>
                             <div className="product-details">
                                 <h6 className="brand">{item?.brand}</h6>
@@ -48,8 +49,8 @@ const ProductCard = (props) => {
                                     // onChange={ratingChanged}
                                     size={24}
                                     edit={false}
-                                    value={item?.totalrating.toString}
-        
+                                    value={item?.totalrating?.toString()}
+       
                                     activeColor="#ffd700"
                                 />,
                                 <p className={`description ${grid == 12 ? "d-block" : "d-none"}`} dangerouslySetInnerHTML={{__html:item?.description}}>

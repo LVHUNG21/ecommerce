@@ -2,9 +2,7 @@
 
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { contactService } from './productService';
-import {createQuery} from './contactService';
-import { userService } from "./userService";
+import {contactService} from './contactService';
 export const createQuery= createAsyncThunk(
     'contact/post',
 

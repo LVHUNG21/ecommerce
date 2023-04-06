@@ -106,6 +106,8 @@ const Dashboard = () => {
           },
         },
       };
+      console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null}`);
+
     return (
         <div>
             <h3 className="mb-4 title">Dashboard</h3>

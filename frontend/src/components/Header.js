@@ -5,10 +5,10 @@ import { BsSearch } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 const Header = () => {
     const dispatch=useDispatch();
-    const cartState=useSelector(state?.user?.cartProducts);
+    const cartState=useSelector((state)=>state?.user?.cartProducts);
     const [total,setTotal]=useState(null);
     useEffect(()=>{
-        for (i = 0;i < cartState?.length;i++) {
+        for (let i = 0;i < cartState?.length;i++) {
             sum=sum+(Number(cartState[index].quantity)*Number(cartState[index].price))
             setTotal(num);
         }

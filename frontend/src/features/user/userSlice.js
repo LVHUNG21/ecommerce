@@ -14,8 +14,7 @@ export const resgisterUser = createAsyncThunk(
         }
     }
   )
-  export const loginUser=createAsyncThunk('auth/login',
-  
+  export const loginUser=createAsyncThunk('user/login' ,
   async (userData,thunkAPI) => {
     try {
         return userService.login(userData);
@@ -25,7 +24,16 @@ export const resgisterUser = createAsyncThunk(
         
     }
 })
+export const getUserProductWishlist=createAsyncThunk('user/wishlist',async(thunkAPI)=>{
+    try {
+       return await userService.getUserWishlist() 
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error)
+        
+    }
 
+
+})
 export const addProductToCart=createAsyncThunk('user/cart/add',  
   async (cartData,thunkAPI) => {
     try {
@@ -108,12 +116,11 @@ export const userSlice=createSlice({
             state.isLoading=false;
             state.isError=false;
             state.isSuccess=true;
-            state.user=action.payload;
-            localStorage.setItem('token',action.payload.token)
-
-            console.log(state.isSuccess);
+            state.user=action.payload
 
             if(state.isSuccess===true){
+            localStorage.setItem('token',action.payload.token)
+console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null}`);
                 toast.info('User Login Successfully')
             }
         }).addCase(loginUser.rejected,(state,action)=>{
@@ -217,6 +224,30 @@ export const userSlice=createSlice({
             toast.error('Some thing went wrong! Update');
             }
         })
+        .addCase(getUserProductWishlist.pending,state=>{
+            state.isLoading=true;
+        }).addCase(getUserProductWishlist.fulfilled,(state,action)=>{
+            state.isLoading=false;
+            state.isError=false;
+            state.isSuccess=true;
+        state.wishlist=action.payload;
+            localStorage.setItem('token',action.payload.token)
+
+            console.log(state.isSuccess);
+
+            if(state.isSuccess===true){
+                toast.info('User Login Successfully')
+            }
+        }).addCase(getUserProductWishlist.rejected,(state,action)=>{
+            state.isLoading=false;
+            state.isError=true;
+            state.isSuccess=false;
+            state.message=action.error;
+            if(state.isError===true){
+            toast.error(action.error);
+            }
+        })
+
     }
     
 })

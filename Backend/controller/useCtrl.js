@@ -301,9 +301,10 @@ const saveAddress=asyncHandler(async(req,res,next)=>{
 })
 
 const userCart=asyncHandler(async(req,res,next)=>{ 
+    console.log(`userCartCtrl`)
     const {productId,color,quantity,price}=req.body;
     const {_id}=req.user;
-    console.log(_id);
+    console.log(`id:${_id}`);
 validateMongodbId(_id);
  try{
     let newCart=await new Cart({
@@ -318,10 +319,12 @@ validateMongodbId(_id);
  }
 });
 const getUserCart=asyncHandler(async(req,res)=>{
+    console.log(`userCartCtrl`)
     const {_id}=req.user;
     validateMongodbId(_id);
+    console.log(`id:${_id}`);
     try{
-        const cart=await Cart.find({userId:_id}).populate("productID").populate("color");
+        const cart=await Cart.find({userId:_id}).populate("productId").populate("color");
         res.json(cart);
     }catch(error){
         throw new Error(error);

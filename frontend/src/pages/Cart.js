@@ -5,14 +5,13 @@ import { Link } from 'react-router-dom';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProductCart, getUserCart, updateProductCart } from '../features/user/userSlice';
-import { userCart } from '../../../Backend/controller/useCtrl';
-
+import { useState } from 'react';
 const Cart = () => {
     const dispatch=useDispatch();
     const [productUpdateDetail,setProductUpdateDetail]=useState(null)
     const [totalAmount,setTotalAmount]=useState(null);
     
-    const userCartState=useSelector(state=>state.user.cartProducts);
+    const userCartState=useSelector(state=>state.user?.cartProducts);
     // console.log(userCartState)
     // console.log(`quantity${quantity}`)
 
@@ -33,7 +32,7 @@ const Cart = () => {
     }
     useEffect(()=>{
         let sum=0;
-        for (let index = 0; index < array.length; index++) {
+        for (let index = 0; index < userCartState?.length; index++) {
             sum=sum+(Number(userCartState[index].quantity)*userCartState[index].price)
             setTotalAmount(sum)
             // console.log()
@@ -78,7 +77,13 @@ const Cart = () => {
                                         </div>
                                         <div className="cart-col-3 d-flex align-items-center gap-15">
                                             <div>
-                                                <input className="form-control" type='number' name='' id='' min={1} max={10} value={productUpdateDetail.quantity ? productUpdateDetail.quantity :item?.quantity} onChange={(e)=>{setProductUpdateDetail({cartItemId:item?_id})
+                                                <input className="form-control" type='number'
+                                                 name='' 
+                                                 id='' 
+                                                 min={1} 
+                                                 max={10}
+                                                  value={productUpdateDetail.quantity ? productUpdateDetail.quantity :item?.quantity}
+                                                   onChange={(e)=>{setProductUpdateDetail({cartItemId:item?._id,quantity:e.target.value})
                                                 }}/>
                                             </div>
                                             <div>

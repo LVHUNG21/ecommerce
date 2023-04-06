@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
+import moment from 'moment'
 import Marquee from 'react-fast-marquee'
 import BlogCard from '../components/BlogCard'
 import ProductCard from '../components/ProductCard'
-import { Link } from 'react-router-dom'
 import SpecialProduct from '../components/SpecialProduct'
 import Container from '../components/Container'
 import { services } from "../utils/Data"
@@ -20,7 +20,8 @@ import {useNavigate} from 'react-router-dom';
 const Home = () => {
 const blogState=useSelector((state)=>state?.blog?.blog);
 const productState=useSelector((state)=>state.product.product);
-
+const token = localStorage.getItem('token');
+console.log(`token${token}`)
 const navigate=useNavigate();
 const dispatch =useDispatch();
 useEffect(()=>{
@@ -424,15 +425,25 @@ const getProducts=()=>{
 
       <Container class1="blog-wrapper py-5 home-wrapper-2">
         <div className="row">
-          <div className="col-12">
-            <h3 className="section-heading">Featured Collection</h3>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-3"><BlogCard /></div>
-          <div className="col-3"><BlogCard /></div>
-          <div className="col-3"><BlogCard /></div>
-          <div className="col-3"><BlogCard /></div>
+          {blogState &&
+            blogState.map((item, index) => {
+              if(index<3){
+                return (
+                <div className="col-3 mb-3"key={index}>
+                  <BlogCard
+                    id={item?._id}
+                    title={item?.title}
+                    description={item?.images[0]?.url}
+                    image={item?.images[0]?.url}
+                    date={moment(item?.createdAt).format("MMMM Do YYYY,h:mm:ss a")}
+                  /></div>
+
+
+              )
+              }
+            }
+            )
+          }
         </div>
 
       </Container>
