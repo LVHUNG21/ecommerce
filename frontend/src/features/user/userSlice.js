@@ -167,7 +167,7 @@ console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getIt
             // console.log(state.isSuccess);
 
             // if(state.isSuccess===true){
-            //     toast.info('Product Added to Cart')
+            //     toast.info('get user cart successfull')
             
             // }
         }).addCase(getUserCart.rejected,(state,action)=>{
@@ -177,6 +177,7 @@ console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getIt
             state.message=action.error;
             // if(state.isError===true){
             // toast.error(action.error);
+            // toast.error('get user card error')
             // }
         }) .addCase(deleteProductCart.pending,state=>{
             state.isLoading=true;

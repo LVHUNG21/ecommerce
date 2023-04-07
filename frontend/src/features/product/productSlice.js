@@ -101,6 +101,9 @@ state.isError=true;
 state.isLoading=false;
 state.isSuccess=false;
 state.message=action.error
+if(state.error){
+    toast.error('get a product error')
+}
 })
 }
     

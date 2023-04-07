@@ -7,12 +7,14 @@ const Header = () => {
     const dispatch=useDispatch();
     const cartState=useSelector((state)=>state?.user?.cartProducts);
     const [total,setTotal]=useState(null);
-    useEffect(()=>{
-        for (let i = 0;i < cartState?.length;i++) {
-            sum=sum+(Number(cartState[index].quantity)*Number(cartState[index].price))
-            setTotal(num);
+    useEffect(() => {
+        let sum = 0;
+        for (let i = 0; i < cartState?.length; i++) {
+            sum = sum + (Number(cartState[i].quantity) * Number(cartState[i].price));
         }
-    })
+        setTotal(sum);
+    }, [cartState]);
+    
 
     return (
         <>

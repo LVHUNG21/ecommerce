@@ -27,7 +27,7 @@ const Cart = () => {
         await dispatch(getUserCart());
     }
     const updateACartProduct= async(productUpdateDetail)=>{
-        dispatch(updateProductCart({cartItemId:id,quantity}))
+        dispatch(updateProductCart({cartItemId:productUpdateDetail?.cartItemId,quantity:productUpdateDetail?.quantity}))
         await dispatch(getUserCart())
     }
     useEffect(()=>{
@@ -82,7 +82,7 @@ const Cart = () => {
                                                  id='' 
                                                  min={1} 
                                                  max={10}
-                                                  value={productUpdateDetail.quantity ? productUpdateDetail.quantity :item?.quantity}
+                                                  value={productUpdateDetail?.quantity ? productUpdateDetail.quantity :item?.quantity}
                                                    onChange={(e)=>{setProductUpdateDetail({cartItemId:item?._id,quantity:e.target.value})
                                                 }}/>
                                             </div>

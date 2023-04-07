@@ -20,19 +20,22 @@ const SingleProduct = () => {
     const [quantity, setQuantity] = useState(1)
     const [alreadyAdded, setalreadyAdded] = useState(false)
     const location = useLocation();
+    console.log(`alreadyAdded: ${alreadyAdded}`)
     console.log(`coLOr:${color}`)
     console.log(quantity);
     const getProductId = location.pathname.split('/')[2]
     console.log(`productId:${getProductId}`)
+    console.log(localStorage?.getItem('token'))
     const dispatch = useDispatch();
     const productState = useSelector(state => state.product.singleproduct)
     const cartState = useSelector(state => state.user?.cartProducts)
+    console.log(productState);
     console.log(cartState)
     const navigate = useNavigate();
     useEffect(() => {
         dispatch(getAProduct(getProductId));
-        dispatch(getUserCart())
-    })
+        dispatch(getUserCart());
+      }, [dispatch, getProductId]);
     useEffect(() => {
         for (let index = 0; index < cartState?.length; index++) {
             if (getProductId === cartState[index]?.productId?._id) {
@@ -88,6 +91,7 @@ const SingleProduct = () => {
 
                                 <h3 className="title">
                                     {productState?.title}
+                                    
                                 </h3>
                             </div>
                             <div className="border-bottom py-3">
@@ -140,28 +144,38 @@ const SingleProduct = () => {
                                         <span className="badge border border-1 bg-white text-dark border-secondary">XL</span>
                                         <span className="badge border border-1 bg-white text-dark border-secondary">XXL</span>
                                     </div>
-                                    <div className="d-flex gap-10 flex-column mt-2 mb-3" >
+                                    {
+                                        alreadyAdded ===false && <>
+                                        <div className="d-flex gap-10 flex-column mt-2 mb-3" >
                                         <h3 className='product-heading'>Color:</h3>
                                         <Color setColor={setColor} colorData={productState?.color} />
                                     </div>
+                                        </>
+                                    }
+                                    
                                     <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3" >
                                         {
                                             alreadyAdded === false && <>
-                                                <h3 className='product-heading'>Quantity:</h3>
+                                              <h3 className='product-heading'>Quantity:</h3>
                                                 <div className="">
                                                     <input type="number" className='form-control' name="" onChange={(e) => setQuantity(e.target.value)} value={quantity} style={{ "width": "70px" }} min={1} max={10} id="" />
                                                 </div>
+                                            </>
+                                              
+                                        }
                                                 <div className={alreadyAdded ? 'ms-0' : 'ms-5' + 'd-flex align-items-center gap-30 ms-5'}>
-                                                    <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' className='button border-0' onClick={() => { alreadyAdded ? navigate('/cart') : uploadCart() }} type='button' >
+                                                    <button 
+                                                    // data-bs-toggle='modal' 
+                                                    // data-bs-target='#staticBackdrop' 
+                                                    className='button border-0' onClick={() => { alreadyAdded ? navigate('/cart') : uploadCart() }} type='button' >
                                                         {alreadyAdded ? 'GO To Cart' : 'Add to cart'}
+                                                        {/* add to cart */}
                                                     </button>
                                                     <button className='button singup'>
                                                         Buy It Now
                                                     </button>
                                                 </div>
-                                            </>
-
-                                        }
+ 
 
                                     </div>
                                     <div className="d-flex align-items-center gap-15">

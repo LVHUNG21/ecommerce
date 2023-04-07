@@ -52,6 +52,7 @@ const getaProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
         const findProduct = await Product.findById(id).populate('color');
+        console.log(findProduct)
         res.json(findProduct);
     } catch (error) {
         throw new Error(error);
