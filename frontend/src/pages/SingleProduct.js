@@ -80,7 +80,8 @@ const SingleProduct = () => {
                             {productState?.images.map((item, index) => {
                                 return (
 
-                                    <div><img src={item?.url} alt="" className='img-fluid' /></div>
+                                    <div><img src={item?.url} alt="" className='img-fluid' key={index}/></div>
+
                                 )
                             })}
                         </div>

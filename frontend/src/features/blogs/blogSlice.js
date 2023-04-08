@@ -19,7 +19,7 @@ export const getABlog= createAsyncThunk(
     'blog/get',
     async (id,thunkAPI) => {
         try {
-            return blogService.getBlogs(id);
+            return blogService.getBlog(id);
             
         } catch (error) {
             return thunkAPI.rejectWithValue(error)
@@ -28,7 +28,7 @@ export const getABlog= createAsyncThunk(
     }
   )
 const blogState={
-        blog:'',
+        blog:[],
       isError:false,
       isSuccess:false,
       isLoading:false,
@@ -36,7 +36,7 @@ const blogState={
 }
 export const blogSlice=createSlice({
 
-    name:"blog"
+name:"blog"
     ,initialState:blogState
     ,reducers:{},
     extraReducers:(builder)=>{

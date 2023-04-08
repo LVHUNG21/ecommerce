@@ -1,20 +1,17 @@
-import {React,useEffect} from 'react'
+import { React, useEffect } from 'react'
 import BlogCard from '../components/BlogCard'
 import Container from '../components/Container';
-import {moment} from 'moment';
+import  moment  from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllBlogs } from '../features/blogs/blogSlice';
 const Blog = () => {
-    const blogState=useSelector((state)=>state?.blog?.blog); 
-    const dispatch=useDispatch();
-    useEffect(()=>{
+    const blogState = useSelector((state) => state?.blog?.blog);
+    const dispatch = useDispatch();
+    useEffect(() => {
         getBlogs();
-    },[])
-    
-    const getBlogs=()=>{
+    }, [])
+    const getBlogs = () => {
         dispatch(getAllBlogs());
-
-
 
     }
     return (
@@ -36,17 +33,18 @@ const Blog = () => {
                     </div></div>
                     <div className="col-9">
                         <div className="row">
-                            { blogState &&
-                                blogState.map((item,index)=>{
+                            {blogState &&
+                                blogState.map((item, index) => {
                                     return (
-                            <div className="col-6 mb-3 "key={index}>
-                                <BlogCard 
-                                  id={item?._id} 
-                                     title={item?.title} 
-                                     description={item?.images[0].url}
-                                     image={item?.images[0]?.url}
-                                        date={moment(item?.createdAt).format("MMMM Do YYYY,h:mm:ss a")}
-                                    /></div>
+                                        <div className="col-6 mb-3" key={index}>
+                                            <BlogCard
+                                                id={item?._id}
+                                                title={item?.title}
+                                                description={item?.description}
+                                                image={item?.image}
+                                                date={moment(item?.createdAt).format("MMMM Do YYYY,h:mm:ss a")}
+                                            />
+                                            </div>
 
 
                                     )

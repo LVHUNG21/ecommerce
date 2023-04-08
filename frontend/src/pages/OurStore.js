@@ -139,7 +139,7 @@ const OurStore = () => {
                                                     count={5}
                                                     // onChange={ratingChanged}
                                                     size={24}
-                                                    edit='false'
+                                                    edit={false}
                                                     value='3'
                                                     activeColor="#ffd700"
                                                 />,
