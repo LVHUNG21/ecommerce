@@ -16,7 +16,7 @@ const Checkout = () => {
             // console.log()
             
         }
-    },[userCartState])
+    },[cartState])
     return (
         <>
             <Container class1="checkout-wrapper py-5 home-wrapper-2">
