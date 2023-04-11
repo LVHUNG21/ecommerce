@@ -9,18 +9,18 @@ router.post('/admin-login',loginAdmin);
 router.post('/cart',authMiddleware,userCart);
 router.get("/cart",authMiddleware,getUserCart);
 // router.post('/edit-user',authMiddleware,updatedaUser)
-router.post('/cart/applycoupon',authMiddleware,applyCoupon);
+// router.post('/cart/applycoupon',authMiddleware,applyCoupon);
 router.post('/cart/cash-order',authMiddleware,createOrder);
 router.get("/all-users",getallUser);
 // router.get("/get-orders",authMiddleware,getOrders);
-router.get("/getallorders",authMiddleware,isAdmin,getAllOrders);
-router.post("/getorderbyuser/:id",authMiddleware,isAdmin,getlOrderByUserId);
+// router.get("/getallorders",authMiddleware,isAdmin,getAllOrders);
+// router.post("/getorderbyuser/:id",authMiddleware,isAdmin,getlOrderByUserId);
 
 router.post("/forgot-password-token",forgotPasswordToken);
 router.put("/password",authMiddleware,updatePassword);
 router.put("/reset-password/:token",resetPassword);
 
-router.put("/order/update-order/:id",authMiddleware,isAdmin,updateOrderStatus);
+// router.put("/order/update-order/:id",authMiddleware,isAdmin,updateOrderStatus);
 router.get("/:id",authMiddleware,isAdmin,getaUser);
 // router.get("/wishlist",authMiddleware,getWishlist);
 

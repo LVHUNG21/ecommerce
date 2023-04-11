@@ -3,8 +3,20 @@ import watch from '../images/watch.jpg';
 import { Link } from 'react-router-dom'
 import Container from '../components/Container';
 import { BiArrowBack } from 'react-icons/bi'
-
+import{useDispatch,userSelector} from  'react-redux'
 const Checkout = () => {
+    const dispatch=useDispatch();
+    const cartState=userSelector(state=>state.auth.cartProdcuts)
+    const [totalAmount,setTotalAmount]=useState(null);
+    useEffect(()=>{
+        let sum=0;
+        for (let index = 0; index < cartState?.length; index++) {
+            sum=sum+(Number(cartState[index].quantity)*cartState[index].price)
+            setTotalAmount(sum)
+            // console.log()
+            
+        }
+    },[userCartState])
     return (
         <>
             <Container class1="checkout-wrapper py-5 home-wrapper-2">
@@ -71,23 +83,32 @@ const Checkout = () => {
                         </div>
                         <div className="col-5">
                             <div className="border-bottom py-4">
-                                <div className="d-flex gap-10 mb-2 align-items-center ">
-                                <div className="w-75 d-flex gap-10">
-                                    <div className="w-25 position-relative"> 
-                                    <span style={{top:"-10px",right:"2px"}}className="badge bg-secondary text-white rounded-circle p-2 position absolute">1</span>
-
-                                        <img className="img-fluid" src={watch} alt="product"/>
-                                    </div>
-                                    <div>
-                                        <h5 className="total-price">dsfasdf</h5>
-                                        <p className="total-price">s/ # fasdfad</p>
-                                    </div>
-                                </div>
-                                <div className="flex-grow-1">
-                                    <h5 className="total">$100</h5>
-
-                                </div>
-                                </div>
+                                {
+                                    cartState && cartState?.map((item,index)=>{
+                                        return (
+                                            <div key='index' className="d-flex gap-10 mb-2 align-items-center ">
+                                            <div className="w-75 d-flex gap-10">
+                                                <div className="w-25 position-relative"> 
+                                                <span style={{top:"-10px",right:"2px"}}className="badge bg-secondary text-white rounded-circle p-2 position absolute">
+                                                    {item?.quantity}
+                                                </span>
+            
+                                                    <img className="img-fluid" height={100} width={100} src={item?.productid?.images[0]?.url} alt="product"/>
+                                                </div>
+                                                <div>
+                                                    <h5 className="total-price">{item?.productId?.title}</h5>
+                                                    <p className="total-price">{item?.color?.title}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex-grow-1">
+                                                <h5 className="total">{item?.price * item?.quantity}</h5>
+            
+                                            </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                             
                             </div>
                             <div className="border-bottom py-4">
                             <div className="d-flex justify-content-between align-items-center">
@@ -96,12 +117,12 @@ const Checkout = () => {
                             </div>
                             <div className="d-flex justify-content-between align-items-center">
                                 <p className='mb-0'>Shipping</p>
-                                <p className='mb-0'>$100000</p>
+                                <p className='mb-0'>$5</p>
                             </div>
                             </div>
                             <div className="d-flex justify-content-between align-items-center border-bottom py-4">
                                 <h4>Total</h4>
-                                <h5>$10000</h5>
+                                <h5>{totalAmount?totalAmount+5: '0' }</h5>
                             </div>
                         </div>
                     </div>
