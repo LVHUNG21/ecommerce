@@ -9,6 +9,7 @@ const session = require('express-session')
 const {errorHandler,notFound}=require('./middlewares/errorHandler')
 const dotenv=require('dotenv').config();
 const authRouter=require('./routes/authRoute');
+const paypal = require('paypal-rest-sdk');
 const colorRouter=require('./routes/colorRoute');
 const uploadRoute=require('./routes/uploadRoute');  
 const enqRouter=require('./routes/enqRoute');
@@ -18,6 +19,11 @@ const categoryRouter=require('./routes/categoryRoute');
 const blogcatRouter=require('./routes/blogcatRoute');
 const brandRouter=require('./routes/brandRoute');
 const couponRouter=require('./routes/couponRoute');
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': 'AfT_REkfUa62lduFkJPzowdDrxIv3YhZ2Xg6rlT--TDnB5VR7j_fuu_VKvk6FyeADUWNp5ghg2QmA8bn',
+    'client_secret': 'AfT_REkfUa62lduFkJPzowdDrxIv3YhZ2Xg6rlT--TDnB5VR7j_fuu_VKvk6FyeADUWNp5ghg2QmA8bn'
+  });
 // const config=require('./con')
 const cors=require('cors')
 const morgan=require("morgan");
