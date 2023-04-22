@@ -1,8 +1,9 @@
 import React from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import Container from '../components/Container'
 import { useFormik } from 'formik'
+import {useNavigate} from 'react-router-dom';
 import CustomInput from '../components/CustomInput'
 import { loginUser } from '../features/user/userSlice';
 import * as yup from 'yup';
@@ -12,6 +13,8 @@ let loginSchema= yup.object({
 
   });
 const Login = () => {
+    const authState=useSelector(state=> state.auth)
+    const navigate=useNavigate();
     const dispatch=useDispatch();
     const formik = useFormik({
       initialValues: {
@@ -26,6 +29,10 @@ const Login = () => {
         // if(isSuccess && createdUser){
         //     toast.info('User Createdd successfullly')
         // }
+        setTimeout(()=>{
+                navigate('/')
+            
+        },500)
       }});
   return (
 

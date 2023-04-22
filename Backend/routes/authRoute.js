@@ -1,5 +1,5 @@
 const express=require('express');
-const {removeProductFromCart,userCart,createOrder,createUser,updatePassword,updateOrderStatus,applyCoupon, loginAdmin,loginUserCtrl,getallUser ,getaUser, deleteaUser, updatedaUser, unblockUser, blockUser ,handleRefreshToken, logout,forgotPasswordToken, resetPassword, getWishlist, saveAddress, getUserCart, emptyCart, getAllOrders, getlOrderByUserId, updateProductQuantityFromCart,  } = require('../controller/useCtrl');
+const {removeProductFromCart,userCart,createOrder,createUser,updatePassword,updateOrderStatus,applyCoupon, loginAdmin,loginUserCtrl,getallUser ,getaUser, deleteaUser, updatedaUser, unblockUser, blockUser ,handleRefreshToken, logout,forgotPasswordToken, resetPassword, getWishlist, saveAddress, getUserCart, emptyCart, getAllOrders, getlOrderByUserId, updateProductQuantityFromCart, getMyOrders,  } = require('../controller/useCtrl');
 const router=express.Router();
 const {authMiddleware,isAdmin}= require("../middlewares/authMiddleware");
 
@@ -12,9 +12,10 @@ router.get("/cart",authMiddleware,getUserCart);
 // router.post('/cart/applycoupon',authMiddleware,applyCoupon);
 router.post('/cart/cash-order',authMiddleware,createOrder);
 router.get("/all-users",getallUser);
-// router.get("/get-orders",authMiddleware,getOrders);
-// router.get("/getallorders",authMiddleware,isAdmin,getAllOrders);
-// router.post("/getorderbyuser/:id",authMiddleware,isAdmin,getlOrderByUserId);
+router.get("/get-orders",authMiddleware,getOrders);
+router.get("/getallorders",authMiddleware,isAdmin,getAllOrders);
+router.post("/getorderbyuser/:id",authMiddleware,isAdmin,getlOrderByUserId);
+router.get("/getmyorders",authMiddleware,getMyOrders);
 
 router.post("/forgot-password-token",forgotPasswordToken);
 router.put("/password",authMiddleware,updatePassword);

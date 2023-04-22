@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const Header = () => {
     const dispatch=useDispatch();
     const cartState=useSelector((state)=>state?.user?.cartProducts);
+    const authState=useSelector(state=>state.auth);
     const [total,setTotal]=useState(null);
     useEffect(() => {
         let sum = 0;
@@ -14,8 +15,6 @@ const Header = () => {
         }
         setTotal(sum);
     }, [cartState]);
-    
-
     return (
         <>
             <header className='header-top-strip py-3'>
@@ -79,11 +78,17 @@ const Header = () => {
                                     </Link>
                                 </div>
                                 <div>
-                                    <Link to='/Login' className="d-flex align-items-center gap-10 text-white">
-                                        <img src="images/user.svg" alt="user" />
+                                    <Link to={authState?.user===null ?'/Login':'/my-profile'} className="d-flex align-items-center gap-10 text-white">
+                                        <img src={user} alt="user" />
+                                        {
+                                            authState.user===null? 
                                         <p className="mb-0">
                                             Login<br /> My Acount
+                                        </p> : 
+                                        <p className="mb-0">
+                                        Welcome{authState.user.firstname}
                                         </p>
+                                        }
 
                                     </Link>
 
@@ -138,6 +143,7 @@ const Header = () => {
                                         <NavLink className="text-white" to="/">Home</NavLink>
                                         <NavLink className="text-white" to="/product">Our Store</NavLink>
                                         <NavLink className="text-white" to="/blogs">Blogs</NavLink>
+                                        <NavLink className="text-white" to="/my-orders">My Orders</NavLink>
                                         <NavLink className="text-white" to="/contact">Contact</NavLink>
                                     </div>
                                 </div>

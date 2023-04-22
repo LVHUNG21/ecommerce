@@ -1,7 +1,7 @@
 import React from 'react'
 
 const CustomInput = (props) => {
-        const{type,name,placeholder,classname,value,onChange,onBlur}=props;
+        const{type,name,placeholder,classname,value,onChange,onBlur,disabled}=props;
   return (
     <div>
     <input type={type} 
@@ -10,7 +10,10 @@ const CustomInput = (props) => {
     value={value}
     onChange={onChange}
     onBlur={onBlur}
-    className={`form-control ${classname}`} />
+  disabled={disabled}
+    className={`form-control ${classname}`} 
+
+    />
 
     </div>
   )

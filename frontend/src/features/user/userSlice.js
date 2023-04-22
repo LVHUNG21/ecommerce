@@ -54,6 +54,16 @@ export const getUserCart=createAsyncThunk('user/cart/get',
         
     }
 })
+export const getOrders=createAsyncThunk('user/order/get',  
+  async (thunkAPI) => {
+    try {
+        return userService.getUserOrders();
+        
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error)
+        
+    }
+})
 export const deleteProductCart=createAsyncThunk('user/cart/product/delete',  
   async (id,thunkAPI) => {
     try {
@@ -68,6 +78,16 @@ export const updateProductCart=createAsyncThunk('user/cart/product/update',
   async (cartDetail,thunkAPI) => {
     try {
         return userService.updateProductFromCart(cartDetail);
+        
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error)
+        
+    }
+})
+export const updateProfile=createAsyncThunk('user/profile/update',  
+  async (data,thunkAPI) => {
+    try {
+        return userService.updateProductFromCart(data);
         
     } catch (error) {
         return thunkAPI.rejectWithValue(error)
@@ -248,6 +268,53 @@ console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getIt
             toast.error(action.error);
             }
         })
+        .addCase(getOrders.pending,state=>{
+            state.isLoading=true;
+        }).addCase(getOrders.fulfilled,(state,action)=>{
+            state.isLoading=false;
+            state.isError=false;
+            state.isSuccess=true;
+        state.getorderedproduct=action.payload;
+            // localStorage.setItem('token',action.payload.token)
+
+            // console.log(state.isSuccess);
+
+            // if(state.isSuccess===true){
+            //     toast.info('User Login Successfully')
+            // }
+        }).addCase(getOrders.rejected,(state,action)=>{
+            state.isLoading=false;
+            state.isError=true;
+            state.isSuccess=false;
+            state.message=action.error;
+            if(state.isError===true){
+            toast.error(action.error);
+            }
+        })
+        .addCase(updateProfile.pending,state=>{
+            state.isLoading=true;
+        }).addCase(updateProfile.fulfilled,(state,action)=>{
+            state.isLoading=false;
+            state.isError=false;
+            state.isSuccess=true;
+        state.updatedProfile=action.payload;
+            // localStorage.setItem('token',action.payload.token)
+
+            // console.log(state.isSuccess);
+
+            if(state.isSuccess===true){
+                toast.info('update successfully')
+            }
+        }).addCase(updateProfile.rejected,(state,action)=>{
+            state.isLoading=false;
+            state.isError=true;
+            state.isSuccess=false;
+            state.message=action.error;
+            if(state.isError===true){
+            toast.error(action.error);
+            }
+        })
+
 
     }
     
