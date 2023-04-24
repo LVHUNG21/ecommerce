@@ -43,7 +43,11 @@ const Login = () => {
                     <div className="auth-card">
                         <h3 className="text-center mb-3">Login</h3>
                             <form action="" onSubmit={formik.handleSubmit} className="d-flex flex-column gap-15" >
-                        <CustomInput type="email" name='email' placeholder='Email' value={formik.values.email} onChange={formik.handleChange('email')} onBlur={() => formik.handleBlur('email')}/>
+                        <CustomInput type="email" name='email' placeholder='Email' 
+                        value={formik.values.email} 
+                        onChange={formik.handleChange('email')}
+                         onBlur={() => formik.handleBlur('email')}
+                         />
                         <div className='error'>{formik.touched.email&& formik.errors.email}</div>
                         <CustomInput type="password" name='password' placeholder='Password' value={formik.values.password} onChange={formik.handleChange('password')} onBlur={() =>formik.handleBlur('password')}/>
                         <div className='error'>{formik.touched.password&& formik.errors.password}</div>

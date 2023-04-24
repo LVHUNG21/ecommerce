@@ -17,6 +17,20 @@ const login=async(userData)=>{
         return respone.data;    
     }
 }
+const forgotPasswordToken= async(data)=>{
+    const respone=await axios.post(`${base_url}user/forgot-password-token`,data)
+    if(respone.data){
+        return respone.data;    
+    }
+
+}
+const resetPassword= async(data)=>{
+    const respone=await axios.post(`${base_url}user/reset-password/${data.token}`,{password:data?.password})
+    if(respone.data){
+        return respone.data;    
+    }
+
+}
 const addToCart= async(cartData)=>{
     const respone=await axios.post(`${base_url}user/cart`,cartData,config);
     if(respone.data){
@@ -72,5 +86,6 @@ updateProductFromCart,getUserWishlist,
     addToCart,
     register ,
     login,removeProductFromCart,
-    updateUser
+    forgotPasswordToken,
+    updateUser,resetPassword
 }

@@ -1,111 +1,143 @@
 
-import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { productService } from './productService';
 // import thunk from "redux-thunk";
-export const getAllProducts= createAsyncThunk(
+export const getAllProducts = createAsyncThunk(
     'product/get',
-    async (thunkAPI) => {
+    async (data,thunkAPI) => {
         try {
-            return productService.getProducts();
-            
+            return productService.getProducts(data);
+
         } catch (error) {
             return thunkAPI.rejectWithValue(error)
-            
+
         }
     }
-  )
-export const getAProduct= createAsyncThunk(
+)
+export const getAProduct = createAsyncThunk(
     'product/getAProduct',
-    async (id,thunkAPI) => { 
+    async (id, thunkAPI) => {
         try {
             return productService.getSingleProduct(id);
-            
+
         } catch (error) {
             return thunkAPI.rejectWithValue(error)
-            
+
         }
     }
-  )
-  export const addToWishList= createAsyncThunk(
+)
+export const addToWishList = createAsyncThunk(
     'product/wishlist',
-    async (prodId,thunkAPI) => {
+    async (prodId, thunkAPI) => {
         try {
             return productService.addToWishList(prodId);
-            
+
         } catch (error) {
             return thunkAPI.rejectWithValue(error)
-            
+
         }
     }
-  ) 
-const productState={
-        product:'',
-      isError:false,
-      isSuccess:false,
-      isLoading:false,
-      message:''
+)
+export const addRating = createAsyncThunk(
+    'product/rating',
+    async (data, thunkAPI) => {
+        try {
+            return productService.rateProduct(data);
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error)
+
+        }
+    }
+)
+const productState = {
+    product: '',
+    isError: false,
+    isSuccess: false,
+    isLoading: false,
+    message: ''
 }
-export const productSlice=createSlice({
+export const productSlice = createSlice({
 
-    name:"product"
-    ,initialState:productState
-    ,reducers:{},
-    extraReducers:(builder)=>{
-        builder.addCase(getAllProducts.pending,state=>{
-            state.isLoading=true;
-       
-    }).addCase(getAllProducts.fulfilled,(state,action)=>{
-            state.isLoading=false;
-            state.isError=false;
-            state.isSuccess=true;
-            state.product=action.payload;
+    name: "product"
+    , initialState: productState
+    , reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(getAllProducts.pending, state => {
+            state.isLoading = true;
 
-    })
-    .addCase(getAllProducts.rejected,(state,action)=>{
-        state.isError=true;
-        state.isLoading=false;
-        state.isSuccess=false;
-        state.message=action.error
-    })
-    .addCase(addToWishList.pending,state=>{
-        state.isLoading=true;
-   
-}).addCase(addToWishList.fulfilled,(state,action)=>{
-        state.isLoading=false;
-        state.isError=false;
-        state.isSuccess=true;
-        state.addToWishList=action.payload;
-        state.message="Product added to wishlist!"
+        }).addCase(getAllProducts.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.product = action.payload;
 
-})
-.addCase(addToWishList.rejected,(state,action)=>{
-    state.isError=true;
-    state.isLoading=false;
-    state.isSuccess=false;
-    state.message=action.error
-})
-.addCase(getAProduct.pending,state=>{
-    state.isLoading=true;
+        })
+            .addCase(getAllProducts.rejected, (state, action) => {
+                state.isError = true;
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.error
+            })
+            .addCase(addToWishList.pending, state => {
+                state.isLoading = true;
 
-}).addCase(getAProduct.fulfilled,(state,action)=>{
-    state.isLoading=false;
-    state.isError=false;
-    state.isSuccess=true;
-    state.singleproduct=action.payload;
-    state.message="Product fetch Successfully!"
+            }).addCase(addToWishList.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.addToWishList = action.payload;
+                state.message = "Product added to wishlist!"
 
-})
-.addCase(getAProduct.rejected,(state,action)=>{
-state.isError=true;
-state.isLoading=false;
-state.isSuccess=false;
-state.message=action.error
-if(state.error){
-    toast.error('get a product error')
-}
-})
-}
-    
+            })
+            .addCase(addToWishList.rejected, (state, action) => {
+                state.isError = true;
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.error
+            })
+            .addCase(getAProduct.pending, state => {
+                state.isLoading = true;
+
+            }).addCase(getAProduct.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.singleproduct = action.payload;
+                state.message = "Product fetch Successfully!"
+
+            })
+            .addCase(getAProduct.rejected, (state, action) => {
+                state.isError = true;
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.error
+                if (state.error) {
+                    toast.error('get a product error')
+                }
+            })
+              .addCase(addRating.pending, state => {
+                state.isLoading = true;
+
+            }).addCase(addRating.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.rating= action.payload;
+                state.message = "Product fetch Successfully!"
+
+            })
+            .addCase(addRating.rejected, (state, action) => {
+                state.isError = true;
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.error
+                // if (state.error) {
+                //     toast.error('get a product error')
+                // }
+            })
+    }
+
 })
 export default productSlice.reducer;

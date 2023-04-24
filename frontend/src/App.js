@@ -40,6 +40,7 @@ function App() {
     <Route path ="contact" element={<Contact/>}/>
     <Route path ="product" element={<OurStore/>}/>
     <Route path ="product/:id" element={<SingleProduct/>}/>
+    <Route path ="reset-password/:token" element={<Resetpassword/>}/>
     <Route path ="blogs" element={<Blog/>}/>
     <Route path ="compare-product" element={<CompareProduct/>}/>
     <Route path ="wishlist" element={<PrivateRoutes><Wishlist/></PrivateRoutes>}/>

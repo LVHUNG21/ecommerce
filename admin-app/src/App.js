@@ -2,8 +2,7 @@ import './App.css';
 import React,{useState} from 'react'
 import { BrowserRouter as Router,Routes,Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
-import Resetpassword from './pages/Resetpassword';
-import Forgotpassword from './pages/Forgotpassword';
+
 import MainLayout from './component/MainLayout';
 import Login from './pages/Login';
 import Enquiries from './pages/Enquiries';
@@ -25,14 +24,16 @@ import Couponlist from './pages/Couponlist';
 import AddCoupon from './pages/AddCoupon';
 import ViewEnq from './pages/ViewEnq';
 import ViewOrder from './pages/ViewOrder';
+import { PrivateRoutes } from './routing/privateRountes';
+import { OpenRoutes } from './routing/openRoutes';
 function App() {
   return (
   <Router>
     <Routes>
-      <Route path="/" element={<Login/>}/>
-      <Route path="/reset-password" element={<Resetpassword/>}/>
-      <Route path="/forgot-password" element={<Forgotpassword/>}/>
-      <Route path='/admin' element={<MainLayout/>}>
+      <Route path="/" element={<OpenRoutes>
+        <Login/> 
+        </OpenRoutes>}/>
+      <Route path='/admin' element={<PrivateRoutes><MainLayout/></PrivateRoutes>}>
         <Route index element={<Dashboard/>}/>
         <Route path='enquiries'element={<Enquiries/>}/>
         <Route path='enquiries/:id'element={<ViewEnq/>}/>

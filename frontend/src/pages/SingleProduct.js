@@ -12,13 +12,14 @@ import Color from '../components/Color';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router';
-import { getAProduct } from '../features/product/productSlice';
+import { getAProduct, getAllProducts } from '../features/product/productSlice';
 import { addProductToCart, getUserCart } from '../features/user/userSlice';
 import { useNavigate } from 'react-router-dom'
 const SingleProduct = () => {
     const [color, setColor] = useState(null)
     const [quantity, setQuantity] = useState(1)
     const [alreadyAdded, setalreadyAdded] = useState(false)
+    const [popurlarProduct,setPopularProduct]=useState([]);
     const location = useLocation();
     console.log(`alreadyAdded: ${alreadyAdded}`)
     console.log(`coLOr:${color}`)
@@ -28,6 +29,7 @@ const SingleProduct = () => {
     console.log(localStorage?.getItem('token'))
     const dispatch = useDispatch();
     const productState = useSelector(state => state.product.singleproduct)
+    const productsState= useSelector(state=> state.product?.product);
     const cartState = useSelector(state => state.user?.cartProducts)
     console.log(productState);
     console.log(cartState)
@@ -35,6 +37,7 @@ const SingleProduct = () => {
     useEffect(() => {
         dispatch(getAProduct(getProductId));
         dispatch(getUserCart());
+        dispatch(getAllProducts());
       }, [dispatch, getProductId]);
     useEffect(() => {
         for (let index = 0; index < cartState?.length; index++) {
@@ -44,6 +47,36 @@ const SingleProduct = () => {
 
         }
     })
+    useEffect(()=>{
+        let data =[];
+        for (let index = 0; index < productsState.length; index++) {
+            const element = productsState[index];
+            if(element.tags==='popular')
+                {
+                   data.push(element); 
+                }
+                setPopularProduct(data);
+                     
+        }
+    },[productsState])
+    const [star,Setstar]=useState(null);
+    const [comment,Setcomment]=useState(null);
+    const addRatingToProduct =()=>{
+        if(star===null){
+            toast.error("please add star")
+            return false;
+        }else
+        if(comment===null){
+            toast.error("Pleae write review about the product")
+            return false;
+        }else{
+            dispatch(addRating({star:star,comment:comment,prodId:getProductId}))
+        setTimeout(()=>{
+                dispatch(getAProduct(getProductId));
+        },300)
+        }
+        return false;
+    }
     const uploadCart = () => {
         if (color === null) {
             toast.error('please Choose Color')
@@ -242,7 +275,6 @@ const SingleProduct = () => {
                                 <h4 >
                                     Write a Review
                                 </h4>
-                                <form action="" className='d-flex flex-column gap-15'>
                                     <div>
                                         <ReactStars
                                             count={5}
@@ -250,45 +282,64 @@ const SingleProduct = () => {
                                             size={24}
                                             edit={false}
                                             value={3}
+                                            onChange={(e)=>{
+                                                Setstar(e);
+                                            }}
 
                                             activeColor="#ffd700"
                                         />,
                                     </div>
 
                                     <div>
-                                        <textarea name="" id="" placeholder='Comments' className="w-100 form-control" cols="30" row="4" />
+                                        <textarea name="" id="" placeholder='Comments' className="w-100 form-control" cols="30" row="4" onChange={(e)=>{
+                                    
+                                                Setcomment(e.target.value);
+                                        }}  />
                                     </div>
                                     <div>
-                                        <div className='d-flex justify-content-end'></div>
-                                        <button className="button border-0">
-
+                                        <div className='d-flex justify-content-end mt-3'></div>
+                                    <button className="button border-0" type='button' onClick={addRatingToProduct} >
                                             Submit Reviews
-
                                         </button>
                                     </div>
-                                </form>
                             </div>
                             <div className="reviews mt-3">
-                                <div className="review">
+                              {
+                                productState && productState?.ratings?.map((item,index)=>{
+                                     <div key={index} className="review">
                                     <div className='d-flex gap-10 align-items-center'>
-                                        <h6 className="mb-0"> fuhjs</h6>
                                         <ReactStars
                                             count={5}
                                             // onChange={ratingChanged}
                                             size={24}
                                             edit={false}
-                                            value={3}
+                                            value={item?.star}
 
                                             activeColor="#ffd700"
                                         />,
 
                                     </div>
-                                    <p className='mt-3'>lorem ipsum folor</p>
+                                    <p className='mt-3'>{item?.comment}</p>
                                 </div>
+                                })
+                              } 
                             </div>
                         </div>
                     </div>
                 </div>
+            </Container>
+            <Container class1="featured-wrapper py-5 home-wrapper-2">
+                    <div className='row'>
+                        <div className='col-12'>
+                            <h3 className='section-heading'> 
+                             Our Popular Products
+                            </h3>
+                        <div className='row'>
+                                    <ProductCard data={popurlarProduct}/>
+
+                        </div>
+                        </div>
+                    </div>
             </Container>
             <Container class1="featured-wrapper py-5 home-wrapper-2">
                 <div className="row">

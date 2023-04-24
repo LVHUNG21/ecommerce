@@ -23,7 +23,31 @@ const getOrders=async() =>{
 return response.data;
 }
 const getOrder=async(id) =>{
-    const response=await axios.post(`${base_url}user/getorderbyuser/${id}`,"",config);
+    const response=await axios.get(`${base_url}user/getaOrder/${id}`,config);
+
+// if(response.data){
+//     localStorage.setItem('user',JSON.stringify(response.data))
+// }
+return response.data;
+}
+const updateOrder=async(data) =>{
+    const response=await axios.put(`${base_url}user/updateOrder/${data.id}`,{status:data.status},config);
+
+// if(response.data){
+//     localStorage.setItem('user',JSON.stringify(response.data))
+// }
+return response.data;
+}
+const getMonthlyOrders =async(id) =>{
+    const response=await axios.post(`${base_url}/getMonthWiseOrderIncome/${id}`,"",config);
+
+// if(response.data){
+//     localStorage.setItem('user',JSON.stringify(response.data))
+// }
+return response.data;
+}
+const getYearlyStats=async(id) =>{
+    const response=await axios.post(`${base_url}/getMonthWiseOrderIncome/${id}`,"",config);
 
 // if(response.data){
 //     localStorage.setItem('user',JSON.stringify(response.data))
@@ -31,7 +55,7 @@ const getOrder=async(id) =>{
 return response.data;
 }
 const authService={
-    login,getOrders
-    ,getOrder
+    login,getOrders,getMonthlyOrders
+    ,getOrder,getYearlyStats,updateOrder
 }
 export default authService;

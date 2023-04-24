@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getOrders } from "../features/user/userSlice";
 const Orders = () => {
     const dispatch = useDispatch();
-    const orderState = useSelector(state => state.getorderedproduct.orders)
+    const orderState = useSelector(state => state?.auth?.getorderedproduct?.orders)
     useEffect(() => {
         dispatch(getOrders(
 

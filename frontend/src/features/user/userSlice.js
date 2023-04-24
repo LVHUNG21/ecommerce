@@ -93,8 +93,28 @@ export const updateProfile=createAsyncThunk('user/profile/update',
         return thunkAPI.rejectWithValue(error)
         
     }
+})
+export const forgotPasswordToken=createAsyncThunk('user/password/token',  
+  async (data,thunkAPI) => {
+    try {
+        return userService.forgotPasswordToken( data);
+        
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error)
+        
+    }
+})
+ export const resetPassword=createAsyncThunk('user/password/reset',  
+  async (data,thunkAPI) => {
+    try {
+        return userService.resetPassword( data);
+        
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error)
+        
+    }
 }
-  
+   
   
   )
   const getCustomerfromLocalStorage=localStorage.getItem('customer') ? JSON.parse(localStorage.getItem('customer')): null;
@@ -314,6 +334,60 @@ console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getIt
             toast.error(action.error);
             }
         })
+         .addCase(forgotPasswordToken.pending,state=>{
+            state.isLoading=true;
+        }).addCase(forgotPasswordToken.fulfilled,(state,action)=>{
+            state.isLoading=false;
+            state.isError=false;
+            state.isSuccess=true;
+        state.token=action.payload;
+        
+            // localStorage.setItem('token',action.payload.token)
+
+            // console.log(state.isSuccess);
+
+            if(state.isSuccess===true){
+                toast.info('forgot password email sent successfully')
+            }
+        }).addCase(forgotPasswordToken.rejected,(state,action)=>{
+            state.isLoading=false;
+            state.isError=true;
+            state.isSuccess=false;
+            state.message=action.error;
+            if(state.isError===true){
+            toast.error(action.error);
+            }
+        })
+         .addCase(resetPassword.pending,state=>{
+            state.isLoading=true;
+        }).addCase(resetPassword.fulfilled,(state,action)=>{
+            state.isLoading=false;
+            state.isError=false;
+            state.isSuccess=true;
+        state.pass=action.payload;
+        
+            // localStorage.setItem('token',action.payload.token)
+
+            // console.log(state.isSuccess);
+
+            if(state.isSuccess===true){
+                toast.info('forgot password email sent successfully')
+            }
+        }).addCase(resetPassword.rejected,(state,action)=>{
+            state.isLoading=false;
+            state.isError=true;
+            state.isSuccess=false;
+            state.message=action.error;
+            if(state.isError===true){
+            toast.error(action.error);
+            }
+        })
+
+
+    }
+    
+})
+export default userSlice.reducer;
 
 
     }

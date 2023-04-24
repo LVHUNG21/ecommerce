@@ -1,5 +1,5 @@
 const express=require('express');
-const {removeProductFromCart,userCart,createOrder,createUser,updatePassword,updateOrderStatus,applyCoupon, loginAdmin,loginUserCtrl,getallUser ,getaUser, deleteaUser, updatedaUser, unblockUser, blockUser ,handleRefreshToken, logout,forgotPasswordToken, resetPassword, getWishlist, saveAddress, getUserCart, emptyCart, getAllOrders, getlOrderByUserId, updateProductQuantityFromCart, getMyOrders,  } = require('../controller/useCtrl');
+const {removeProductFromCart,userCart,getMonthWiseOrderCount,createOrder,createUser,updatePassword,updateOrderStatus,applyCoupon, loginAdmin,loginUserCtrl,getallUser ,getaUser, deleteaUser, updatedaUser, unblockUser, blockUser ,handleRefreshToken, logout,forgotPasswordToken, resetPassword, getWishlist, saveAddress, getUserCart, emptyCart, getAllOrders, getlOrderByUserId, updateProductQuantityFromCart, getMyOrders, getMonthWiseOrderIncome, getYearlyTotalOrders, getSingleOrder, updateOrder,  } = require('../controller/useCtrl');
 const router=express.Router();
 const {authMiddleware,isAdmin}= require("../middlewares/authMiddleware");
 
@@ -8,12 +8,17 @@ router.post('/login',loginUserCtrl);
 router.post('/admin-login',loginAdmin);
 router.post('/cart',authMiddleware,userCart);
 router.get("/cart",authMiddleware,getUserCart);
+router.get("/getMonthWiseOrderIncome",authMiddleware,getMonthWiseOrderIncome);
+router.get("/getMonthWiseOrderCount",authMiddleware,getMonthWiseOrderCount);
+router.get("/getyearlyorders",authMiddleware,getYearlyTotalOrders);
 // router.post('/edit-user',authMiddleware,updatedaUser)
 // router.post('/cart/applycoupon',authMiddleware,applyCoupon);
 router.post('/cart/cash-order',authMiddleware,createOrder);
 router.get("/all-users",getallUser);
 router.get("/get-orders",authMiddleware,getOrders);
 router.get("/getallorders",authMiddleware,isAdmin,getAllOrders);
+router.get("/getaOrder/:id",authMiddleware,isAdmin,getSingleOrder);
+router.put("/updateOrder/:id",authMiddleware,isAdmin,updateOrder);
 router.post("/getorderbyuser/:id",authMiddleware,isAdmin,getlOrderByUserId);
 router.get("/getmyorders",authMiddleware,getMyOrders);
 

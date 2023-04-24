@@ -15,7 +15,7 @@ import { ImBlog } from "react-icons/im";
 import { BiCategoryAlt } from 'react-icons/bi';
 import { SiBrandfolder } from 'react-icons/si';
 import { FaClipboardList, FaBloggerB } from 'react-icons/fa';
-import { AiOutlineDashboard, AiOutlineShoppingCart, AiOutlinePicLeft, AiOutlineUser, AiOutlineBgColors } from 'react-icons/ai';
+import { AiOutlineLogout,AiOutlineDashboard, AiOutlineShoppingCart, AiOutlinePicLeft, AiOutlineUser, AiOutlineBgColors } from 'react-icons/ai';
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
@@ -40,7 +40,9 @@ const MainLayout = () => {
           mode="inline"
           defaultSelectedKeys={['']}
           onClick={({ key }) => {
-            if (key == 'signout') {
+            if (key === 'signout') {
+                localStorage.clear()
+                  window.location.reload();
 
             } else {
               navigate(key);
@@ -159,6 +161,10 @@ const MainLayout = () => {
               icon: <FaClipboardList className="fs-4" />,
               label: 'Enquiries',
             },
+               {key: 'signout',
+              icon: <AiOutlineLogout className="fs-4" />,
+              label: 'Sign Out',
+            }
           ]}
         />
       </Sider>

@@ -11,6 +11,7 @@ const Coupon=require("../models/couponModel");
 const crypto=require("crypto");
 const validateMongodbId=require('../untils/validateMongodbId')
 const jwt=require("jsonwebtoken");
+const { monitorEventLoopDelay } = require('perf_hooks');
 
 const createUser = async (req, res) => {
     const email = req.body.email;
@@ -249,7 +250,7 @@ const forgotPasswordToken=asyncHandler(async(req,res)=>{
         const token=await user.createPasswordResetToken();
         await user.save();
 
-        const resetURL=`hi,PLEASE FOLLOW THIS LINK TO RESET PASSWORD,<a href='http://localhost:5000/api/user/reset-password/${token}'>Clich Hia`
+        const resetURL=`hi,PLEASE FOLLOW THIS LINK TO RESET PASSWORD,<a href='http://localhost:3000/reset-password/${token}'>Clich Hia`
          
         const data={
             to:email,
@@ -463,6 +464,41 @@ const getMyOrders=asyncHandler(async (req,res)=>{
        throw new Error(error) 
     }
 })
+const getAllOrders=asyncHandler(async (req,res)=>{
+
+    try {
+        const orders=await Order.find().populate('user');
+        res.json({
+            orders
+        })        
+    } catch (error) {
+       throw new Error(error) 
+    }
+})
+const getSingleOrder=asyncHandler(async (req,res)=>{
+    const {id}=req.params;
+    try {
+        const orders=await Order.findOne({_id:id}).populate("orderItems.product").populate("orderItems.color");
+        res.json({
+            orders
+        })        
+    } catch (error) {
+       throw new Error(error) 
+    }
+})
+const updateOrder=asyncHandler(async (req,res)=>{
+    const {id}=req.params;
+    try {
+        const orders=await Order.findById(id)
+        orders.orderStatus=req.body.status;
+        await order.save();
+        res.json({
+            orders
+        })        
+    } catch (error) {
+       throw new Error(error) 
+    }
+})
 // const getOrders=asyncHandler(async(req,res)=>{
 //     const {_id}=req.user;
 //     validateMongodbId(_id);
@@ -516,8 +552,96 @@ const getMyOrders=asyncHandler(async (req,res)=>{
 //         throw new Error(error);
 //     }
 // })
-module.exports = {removeProductFromCart
-    ,updateProductQuantityFromCart
+const getMonthWiseOrderIncome= asyncHandler(async(req,res)=>{
+    let monthNames=["january","Feb","Mar","April","May","June","July","August","September","october","November","December"]
+    let d=new Date();
+    let endDate='';
+    d.setDate(1)
+    for (let index = 0; index < 11; index++) {
+       d.setMonth(d.getMonth()-1) 
+       endDate=monthNames[d.getMonth()]+ ""+ d.getFullYear();
+    }
+    const data=await Order.aggregate([
+        {
+            $match:{
+                createAt:{
+                    $lte:new Date(),
+                    $gte:new Date(endDate),
+                }
+            }
+        },{
+            $group:{
+                _id:{
+                    month:"$month"
+                },amount:{$sum:"$totalPriceAfterDiscount"}
+                ,count:{$sum:"$_id"}
+            }
+        }
+    ])
+    res.json(data)
+})
+
+const getMonthWiseOrderCount= asyncHandler(async(req,res)=>{
+    let monthNames=["january","Feb","Mar","April","May","June","July","August","September","october","November","December"]
+    let d=new Date();
+    let endDate='';
+    d.setDate(1)
+    for (let index = 0; index < 11; index++) {
+       d.setMonth(d.getMonth()-1) 
+       endDate=monthNames[d.getMonth()]+ ""+ d.getFullYear();
+    }
+    const data=await Order.aggregate([
+        {
+            $match:{
+                createAt:{
+                    $lte:new Date(),
+                    $gte:new Date(endDate),
+                }
+            }
+        },{
+            $group:{
+                _id:{
+                    month:"$month"
+                },count:{$sum:"1"}
+
+            },
+
+        }
+    ])
+    res.json(data)
+})
+const getYearlyTotalOrders= asyncHandler(async(req,res)=>{
+    let monthNames=["january","Feb","Mar","April","May","June","July","August","September","october","November","December"]
+    let d=new Date();
+    let endDate='';
+    d.setDate(1)
+    for (let index = 0; index < 11; index++) {
+       d.setMonth(d.getMonth()-1) 
+       endDate=monthNames[d.getMonth()]+ ""+ d.getFullYear();
+    }
+    const data=await Order.aggregate([
+        {
+            $match:{
+                createAt:{
+                    $lte:new Date(),
+                    $gte:new Date(endDate),
+                }
+            }
+        },{
+            $group:{
+                _id:null
+                ,count:{$sum:"$_id"}
+                ,amount:{$sum:"$totalPriceAfterDiscount"}
+
+            },
+
+        }
+    ])
+    res.json(data)
+})
+module.exports = {removeProductFromCart,getMonthWiseOrderCount,
+    getMonthWiseOrderIncome,
+    updateProductQuantityFromCart
     ,createOrder,
     getlOrderByUserId,
     applyCoupon,
@@ -530,6 +654,7 @@ module.exports = {removeProductFromCart
      saveAddress,
      loginUserCtrl, 
      getallUser, 
+     getYearlyTotalOrders,
      getaUser, 
      deleteaUser, 
      updatedaUser, 
@@ -540,7 +665,9 @@ module.exports = {removeProductFromCart
       logout,updatePassword,
       forgotPasswordToken,
       resetPassword,getUserCart,
-    getOrders,
-    getMyOrders
+    // getOrders,
+    updateOrder,
+    getMyOrders,
+    getAllOrders,getSingleOrder
     // updateOrderStatus,
-    createOrder};
+    };
