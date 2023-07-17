@@ -1,59 +1,133 @@
-router.post('/create_payment_url', function (req, res, next) {
-    var ipAddr = req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
+const Razorpay=require('razorpay');
+ const instance=new Razorpay({ key_id:"rzp_test_y60i3RUCXRRuEt",key_secret:"tlrkYKqr1twDD1oZDL3nsGkY"
+})
+const checkout=async (req,res)=>{
 
-    var config = require('config');
-    var dateFormat = require('dateformat');
-
-    
-    var tmnCode = config.get('CGXZLS0Z');
-    var secretKey = config.get('XNBCJFAKAZQSGTARRLGCHVZWCIOIGSHN');
-    var vnpUrl = config.get('vnp_Url');
-    var returnUrl = config.get('vnp_ReturnUrl');
-
-    var date = new Date();
-
-    var createDate = dateFormat(date, 'yyyymmddHHmmss');
-    var orderId = dateFormat(date, 'HHmmss');
-    var amount = req.body.amount;
-    var bankCode = req.body.bankCode;
-    
-    var orderInfo = req.body.orderDescription;
-    var orderType = req.body.orderType;
-    var locale = req.body.language;
-    if(locale === null || locale === ''){
-        locale = 'vn';
+  const {amount}=req.body;
+  try {
+    const option={
+      amount:amount*100,
+      currency:"INR",
     }
-    var currCode = 'VND';
-    var vnp_Params = {};
-    vnp_Params['vnp_Version'] = '2.1.0';
-    vnp_Params['vnp_Command'] = 'pay';
-    vnp_Params['vnp_TmnCode'] = tmnCode;
-    // vnp_Params['vnp_Merchant'] = ''
-    vnp_Params['vnp_Locale'] = locale;
-    vnp_Params['vnp_CurrCode'] = currCode;
-    vnp_Params['vnp_TxnRef'] = 3434;
-    vnp_Params['vnp_OrderInfo'] = orderInfo;
-    vnp_Params['vnp_OrderType'] = orderType;
-    vnp_Params['vnp_Amount'] = amount * 100;
-    vnp_Params['vnp_ReturnUrl'] = returnUrl;
-    vnp_Params['vnp_IpAddr'] = ipAddr;
-    vnp_Params['vnp_CreateDate'] = createDate;
-    if(bankCode !== null && bankCode !== ''){
-        vnp_Params['vnp_BankCode'] = bankCode;
-    }
+    const order=await instance.orders.create(option);
+    res.json({
+      success:true,
+      order
+    })
+  } catch (error) {
+    console.log(error);
+  }
 
-    vnp_Params = sortObject(vnp_Params);
+}
+const paymentVerification=async (req,res)=>{
+ const {razorpayOrderId,razorPaymentId}=req.body;
+ res.json({
+  razorpayOrderId,razorPaymentId
+ })
 
-    var querystring = require('qs');
-    var signData = querystring.stringify(vnp_Params, { encode: false });
-    var crypto = require("crypto");     
-    var hmac = crypto.createHmac("sha512", secretKey);
-    var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex"); 
-    vnp_Params['vnp_SecureHash'] = signed;
-    vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+}
 
-    res.redirect(vnpUrl)
-});
+
+// import axios from "axios";
+// import {
+//   PAYPAL_API,
+//   HOST,
+//   PAYPAL_API_CLIENT,
+//   PAYPAL_API_SECRET,
+// } from "../config";
+
+// export const createOrder = async (req, res) => {
+//   try {
+//     const order = {
+//       intent: "CAPTURE",
+//       purchase_units: [
+//         {
+//           amount: {
+//             currency_code: "USD",
+//             value: "105.70",
+//           },
+//         },
+//       ],
+//       application_context: {
+//         brand_name: "mycompany.com",
+//         landing_page: "NO_PREFERENCE",
+//         user_action: "PAY_NOW",
+//         return_url: `${HOST}/capture-order`,
+//         cancel_url: `${HOST}/cancel-payment`,
+//       },
+//     };
+
+
+//     // format the body
+//     const params = new URLSearchParams();
+//     params.append("grant_type", "client_credentials");
+
+//     // Generate an access token
+//     const {
+//       data: { access_token },
+//     } = await axios.post(
+//       "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+//       params,
+//       {
+//         headers: {
+//           "Content-Type": "application/x-www-form-urlencoded",
+//         },
+//         auth: {
+//           username: PAYPAL_API_CLIENT,
+//           password: PAYPAL_API_SECRET,
+//         },
+//       }
+//     );
+
+//     console.log(access_token);
+
+//     // make a request
+//     const response = await axios.post(
+//       `${PAYPAL_API}/v2/checkout/orders`,
+//       order,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${access_token}`,
+//         },
+//       }
+//     );
+
+//     console.log(response.data);
+
+//     return res.json(response.data);
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).json("Something goes wrong");
+//   }
+// };
+
+// export const captureOrder = async (req, res) => {
+//   const { token } = req.query;
+
+//   try {
+//     const response = await axios.post(
+//       `${PAYPAL_API}/v2/checkout/orders/${token}/capture`,
+//       {},
+//       {
+//         auth: {
+//           username: PAYPAL_API_CLIENT,
+//           password: PAYPAL_API_SECRET,
+//         },
+//       }
+//     );
+
+//     console.log(response.data);
+
+//     res.redirect("/payed.html");
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).json({ message: "Internal Server error" });
+//   }
+// };
+
+// export const cancelPayment = (req, res) => {
+//   res.redirect("/");
+// };
+module.exports={
+  checkout,paymentVerification
+}

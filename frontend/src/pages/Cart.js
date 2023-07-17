@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import  { useEffect } from 'react'
 import watch from '../images/watch.jpg';
 import { AiFillDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
@@ -6,29 +6,52 @@ import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProductCart, getUserCart, updateProductCart } from '../features/user/userSlice';
 import { useState } from 'react';
+import React, { Component } from 'react';
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
 const Cart = () => {
     const dispatch=useDispatch();
     const [productUpdateDetail,setProductUpdateDetail]=useState(null)
     const [totalAmount,setTotalAmount]=useState(null);
     
-    const userCartState=useSelector(state=>state.user?.cartProducts);
-    // console.log(userCartState)
+    const userCartState=useSelector(state=>state?.auth?.cartProducts);
+    console.log(userCartState)
     // console.log(`quantity${quantity}`)
 
     useEffect(()=>{
         dispatch(getUserCart());
-    },[])
-    useEffect(()=>{
+    },[userCartState])
+    useEffect( ()=>{
         if(productUpdateDetail!==null){
-            dispatch(updateACartProduct({cartItemId:productUpdateDetail?.cartItemId,quantity:productUpdateDetail?.quantity}))
+           dispatch(updateACartProduct({cartItemId:productUpdateDetail?.cartItemId,quantity:productUpdateDetail?.quantity}))
     }},[productUpdateDetail])
     const deleteACartProduct= async(id)=>{
         dispatch(deleteProductCart(id))
-        await dispatch(getUserCart());
+        dispatch(getUserCart());
     }
     const updateACartProduct= async(productUpdateDetail)=>{
         dispatch(updateProductCart({cartItemId:productUpdateDetail?.cartItemId,quantity:productUpdateDetail?.quantity}))
-        await dispatch(getUserCart())
+        dispatch(getUserCart())
     }
     useEffect(()=>{
         let sum=0;
@@ -36,12 +59,12 @@ const Cart = () => {
             sum=sum+(Number(userCartState[index].quantity)*userCartState[index].price)
             setTotalAmount(sum)
             // console.log()
-            
         }
     },[userCartState])
     return (
         <>
             <Container class1="cart-wrapper home-wrapper-2 py-5">
+                    <ErrorBoundary>
                     <div className="row">
                         <div className="col-12">
                             <div className="cart-data py-3 d-flex justify-content-between align-items-center">
@@ -141,7 +164,7 @@ const Cart = () => {
                           
                         </div>
                         </div>
-                    </div>
+                    </div></ErrorBoundary>
             </Container>
         </>
     )

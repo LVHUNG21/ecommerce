@@ -79,12 +79,20 @@ const updateUser =async(data)=>{
     }
 
 }
+const createOrder=async(orderDetail)=>{
+    const response=await axios.post(`${base_url}user/cart/create-order`,orderDetail,config)
+    if(response.data){
+        return response.data;
+    }
+
+}
 export const userService={
     getUserOrders,
 updateProductFromCart,getUserWishlist,
     getCart,
     addToCart,
     register ,
+    createOrder,
     login,removeProductFromCart,
     forgotPasswordToken,
     updateUser,resetPassword

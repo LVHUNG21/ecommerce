@@ -44,6 +44,16 @@ export const addProductToCart=createAsyncThunk('user/cart/add',
         
     }
 })
+export const createAnOrder=createAsyncThunk('user/cart/create-order',  
+  async (orderDetail,thunkAPI) => {
+    try {
+    return userService.createOrder(orderDetail);
+        
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error)
+        
+    }
+})
 export const getUserCart=createAsyncThunk('user/cart/get',  
   async (thunkAPI) => {
     try {
@@ -118,6 +128,7 @@ export const forgotPasswordToken=createAsyncThunk('user/password/token',
   
   )
   const getCustomerfromLocalStorage=localStorage.getItem('customer') ? JSON.parse(localStorage.getItem('customer')): null;
+//   const getCustomerfromLocalStorage=localStorage?.getItem('token') ;
   const initialState={
       user:getCustomerfromLocalStorage,
       isError:false,
@@ -126,7 +137,7 @@ export const forgotPasswordToken=createAsyncThunk('user/password/token',
       message:''
   }
 export const userSlice=createSlice({
-    name:"user"
+    name:"auth"
     ,initialState
     ,reducers:{},
     extraReducers:(builder)=>{
@@ -160,7 +171,7 @@ export const userSlice=createSlice({
 
             if(state.isSuccess===true){
             localStorage.setItem('token',action.payload.token)
-console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null}`);
+    console.log(`token${localStorage.getItem('token') ? JSON.parse(localStorage.getItem('user')) : null}`);
                 toast.info('User Login Successfully')
             }
         }).addCase(loginUser.rejected,(state,action)=>{
@@ -381,13 +392,30 @@ console.log(`token${localStorage.getItem('user') ? JSON.parse(localStorage.getIt
             if(state.isError===true){
             toast.error(action.error);
             }
+        })  .addCase(createAnOrder.pending,state=>{
+            state.isLoading=true;
+        }).addCase(createAnOrder.fulfilled,(state,action)=>{
+            state.isLoading=false;
+            state.isError=false;
+            state.isSuccess=true;
+        state.orderedProduct=action.payload;
+        
+            // localStorage.setItem('token',action.payload.token)
+
+            // console.log(state.isSuccess);
+
+            if(state.isSuccess===true){
+                toast.info('order create successfully')
+            }
+        }).addCase(createAnOrder.rejected,(state,action)=>{
+            state.isLoading=false;
+            state.isError=true;
+            state.isSuccess=false;
+            state.message=action.error;
+            if(state.isError===true){
+            toast.error(action.error);
+            }
         })
-
-
-    }
-    
-})
-export default userSlice.reducer;
 
 
     }

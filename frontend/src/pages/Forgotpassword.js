@@ -2,6 +2,8 @@ import React from 'react'
 import CustomInput from '../components/CustomInput'
 import { Link, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+ import { useNavigate } from 'react-router-dom';
+
 import { useFormik } from 'formik'
 import * as yup from 'yup';
 import Container from '../components/Container'
@@ -10,6 +12,8 @@ let emailSchema= yup.object({
     email: yup.string().email("Moi nhap dung email").required("Email is Required"),
   });
 const Forgotpassword = () => {
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
     const formik = useFormik({
       initialValues: {
         email: '',
@@ -17,7 +21,7 @@ const Forgotpassword = () => {
       },
       validationSchema:emailSchema,
       onSubmit: values => {
-               dispatch(forgotPasswordToken(ivalues));
+               dispatch(forgotPasswordToken(values));
         setTimeout(()=>{
                 navigate('/')
         },500)
@@ -32,7 +36,7 @@ const Forgotpassword = () => {
                             <p className="text-center my-2 mb-3">
                                 We will send you  an email to reset  your password
                             </p>
-                            <form action="" onSubmit={} className="d-flex flex-column gap-15" >
+                            <form action="" onSubmit={formik.handleSubmit} className="d-flex flex-column gap-15" >
                                 <CustomInput type="email" name='email' placeholder='email' 
                         value={formik.values.email} 
                         onChange={formik.handleChange('email')}

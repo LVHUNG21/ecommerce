@@ -643,7 +643,7 @@ module.exports = {removeProductFromCart,getMonthWiseOrderCount,
     getMonthWiseOrderIncome,
     updateProductQuantityFromCart
     ,createOrder,
-    getlOrderByUserId,
+    // getlOrderByUserId,
     applyCoupon,
     emptyCart,
     getAllOrders, 

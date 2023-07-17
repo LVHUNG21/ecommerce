@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import Container from '../components/Container'
 import {useFormik} from 'formik'
 import * as yup from 'yup';
-import {FiEdit} from 'react-icons/Fi'
+import {FiEdit} from 'react-icons/fi'
+import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from '../features/user/userSlice';
  
@@ -14,6 +15,7 @@ let profileSchema= yup.object({
 
   });
 const Profile = () => {
+    const navigate=useNavigate();
     const dispatch=useDispatch();
     const userState=useSelector(state=>state.auth.user)
     const [edit,setEdit]=useState(true)

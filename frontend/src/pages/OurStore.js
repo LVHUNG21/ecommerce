@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+
 import ReactStars from 'react-rating-stars-component';
 import BreadCrumb from '../components/BreadCrumb';
 import { Helmet } from 'react-helmet';
@@ -17,24 +18,24 @@ const OurStore = () => {
     const [brands, setBrands] = useState([]);
     const [categoryies, SetCategories] = useState([]);
     const [tags, setTags] = useState([]);
-    const [color,setColor]=useState([]);
+    const [color, setColor] = useState([]);
 
     //filter States
-    const [tag,setTag]=useState(null);
-    const [brand,setBrand]=useState(null);
+    const [tag, setTag] = useState(null);
+    const [brand, setBrand] = useState(null);
     const [category, Setcategory] = useState(null);
-    const [minPrice,SetminPrice]=useState(null);
-    const [maxPrice,SetmaxPrice]=useState(null);
-    const [sort,setSort]=useState(null);
+    const [minPrice, SetminPrice] = useState(null);
+    const [maxPrice, SetmaxPrice] = useState(null);
+    const [sort, setSort] = useState(null);
     useEffect(() => {
         let newBrands = [];
         let category = [];
-        let newtags=[];
-        let newColor=[];
+        let newtags = [];
+        let newColor = [];
 
         for (let index = 0; index < productState.length; index++) {
             const element = productState[index];
-            newBrands.push({ brand: element.brand })
+            newBrands.push( element.brand )
             category.push(element.category);
             newtags.push(element.tags);
             newColor.push(element.color)
@@ -43,12 +44,12 @@ const OurStore = () => {
         SetCategories(category);
         setTags(newtags);
     }, [productState])
-    console.log([...new Set(brands)], [...new Set()], [...new Set(tags)])
+    console.log([...new Set(brands)], [...new Set(categoryies)], [...new Set(tags)])
     useEffect(() => {
         getProducts();
-    },[sort,tag,brand,category,minPrice,maxPrice])
+    }, [sort, tag, brand, category, minPrice, maxPrice])
     const getProducts = () => {
-        dispatch(getAllProducts(sort,tag,brand,category,minPrice,maxPrice));
+        dispatch(getAllProducts(sort, tag, brand, category, minPrice, maxPrice));
     }
     const gridSetter = (i) => {
         setGrid(i)
@@ -68,14 +69,15 @@ const OurStore = () => {
                             <div>
                                 <ul className='ps-0'>
                                     {
-                                        categoryies && [...new Set(categories).map((item, index) => {
+                                        categoryies && [...new Set(categoryies)].map((item, index) => {
                                             return <li key={index} onClick={() => {
-                                                Setcategory(item)
+                                                SetCategories(item)
                                             }}>
                                                 {item}
 
                                             </li>
-                                        })]
+                                            
+                                        })
                                     }
 
                                 </ul>
@@ -111,11 +113,11 @@ const OurStore = () => {
                                 <h5 className="sub-title">Price</h5>
                                 <div className="d-flex align-items-center gap-10">
                                     <div className="form-floating">
-                                        <input type="number" className="form-control py-1" id="floatingInput" placeholder="From" onChange={(e)=>SetminPrice(e.target.value)} />
+                                        <input type="number" className="form-control py-1" id="floatingInput" placeholder="From" onChange={(e) => SetminPrice(e.target.value)} />
                                         <label htmlFor="floatingInput"> From</label>
                                     </div>
                                     <div className="form-floating ">
-                                        <input type="number" className="form-control py-1" id="floatingInput" placeholder="To" onChange={(e)=>SetmaxPrice(e.target.value)}/>
+                                        <input type="number" className="form-control py-1" id="floatingInput" placeholder="To" onChange={(e) => SetmaxPrice(e.target.value)} />
                                         <label htmlFor="floatingInput1"> To</label>
                                     </div>
                                 </div>
@@ -142,46 +144,46 @@ const OurStore = () => {
                                 </div> */}
 
                             </div>
-                         
+
                         </div>
                         <div className="mt-4 mb-3">
-                                <h3 className="sub-title">
-                                    Product tags
-                                </h3>
-                                <div>
-                                    <div className="product-tags d-flex flex-wrap align-items-center gap-10">
-                                        {
-                                            tags && [...new Set(tags).map((item, index) => {
-                                                return (
-                                                    <span onClick={()=>setTags(item)} className="text-capilize badge bg-light text-secondary rounded-3 py-2 px-3">
-                                                        {item}
-                                                    
-                                                    </span>
-                                                )
-                                            })]
-                                        }
-                                    </div>
+                            <h3 className="sub-title">
+                                Product tags
+                            </h3>
+                            <div>
+                                <div className="product-tags d-flex flex-wrap align-items-center gap-10">
+                                    {
+                                        tags && [...new Set(tags)].map((item, index) => {
+                                            return (
+                                                <span key={index} onClick={() => setTags(item)} className="text-capilize badge bg-light text-secondary rounded-3 py-2 px-3">
+                                                    {item}
+
+                                                </span>
+                                            )
+                                        })
+                                    }
                                 </div>
                             </div>
-                            <div className=" mb-3">
-                                <h3 className="sub-title">
-                                    Product Brand
-                                </h3>
-                                <div>
-                                    <div className="product-tags d-flex flex-wrap align-items-center gap-10">
-                                        {
-                                            brands && [...new Set(brands).map((item, index) => {
-                                                return (
-                                                    <span onClick={()=>setBrands(item)} className="text-capilize badge bg-light text-secondary rounded-3 py-2 px-3">
-                                                        {item}
-                                                    
-                                                    </span>
-                                                )
-                                            })]
-                                        }
-                                    </div>
+                        </div>
+                        <div className=" mb-3">
+                            <h3 className="sub-title">
+                                Product Brand
+                            </h3>
+                            <div>
+                                <div className="product-tags d-flex flex-wrap align-items-center gap-10">
+                                    {
+                                        brands && [...new Set(brands)].map((item, index) => {
+                                            return (
+                                                <span key={index} onClick={() => setBrands(item)} className="text-capilize badge bg-light text-secondary rounded-3 py-2 px-3">
+                                                    {item}
+
+                                                </span>
+                                            )
+                                        })
+                                    }
                                 </div>
                             </div>
+                        </div>
                     </div>
                     <div className="col-9">
                         <div className="filter-sort-grid mb-4">
@@ -189,7 +191,7 @@ const OurStore = () => {
                                 <div className='d-flex align-items-center gap-10'>
                                     <p className="mb-0 d-block " style={{ width: "100px" }}>Sort by</p>
 
-                                    <select defaultValue={"manual"} name="" id="" className="form-control form-select" onChange={(e)=>setSort(e.target.value)}>
+                                    <select defaultValue={"manual"} name="" id="" className="form-control form-select" onChange={(e) => setSort(e.target.value)}>
                                         <option value="manual">Featured</option>
                                         {/* <option value="best-selling">Best selling</option> */}
                                         <option value="title">Alphabettically, A-Z</option>

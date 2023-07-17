@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "cloudinary": "^1.35.0",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "paypal-rest-sdk": "^1.8.1"
   }
 }

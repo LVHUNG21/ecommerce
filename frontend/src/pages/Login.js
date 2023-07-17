@@ -19,11 +19,9 @@ const Login = () => {
     const formik = useFormik({
       initialValues: {
         email: '',
-        password:'',
-
+        password:''
       },
       validationSchema:loginSchema,
-
       onSubmit: values => {
                dispatch(loginUser(values));
         // if(isSuccess && createdUser){
@@ -31,7 +29,6 @@ const Login = () => {
         // }
         setTimeout(()=>{
                 navigate('/')
-            
         },500)
       }});
   return (

@@ -2,15 +2,21 @@ import React, { useEffect, useState } from 'react'
 import Container from './Container';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
+import user from '../images/user.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { getAProduct } from '../features/product/productSlice';
+function range(start, end) {
+  const length = end - start;
+  return Array.from({ length }, (_, i) => start + i);
+}
 const options = range(0, 1000).map((o) => `Item ${o}`);
 const Header = () => {
     const dispatch = useDispatch();
     const cartState = useSelector((state) => state?.user?.cartProducts);
     const authState = useSelector(state => state?.auth);
+    console.log(authState);
     const navigate=useNavigate();
     const productStae=useSelector(state=>state?.product.product)
      const [paginate, setPaginate] = useState(true);
@@ -25,12 +31,12 @@ const Header = () => {
     }, [cartState]);
     useEffect(()=>{
         let data=[];
-        for (let index = 0; index < array.length; index++) {
+        for (let index = 0; index < productStae.length; index++) {
             const element=productStae[index];
             data.push({id:index,prod:element?._id,name:element?.title})
         }
         setProductOpt(data);
-    })
+    },[productStae])
     const handleLogout = () => {
         localStorage.clear();
         window.location.reload();
@@ -107,15 +113,15 @@ const Header = () => {
                                     </Link>
                                 </div>
                                 <div>
-                                    <Link to={authState?.user === null ? '/Login' : '/my-profile'} className="d-flex align-items-center gap-10 text-white">
+                                    <Link to={authState?.user === null ? "/login" : '/my-profile'} className="d-flex align-items-center gap-10 text-white">
                                         <img src={user} alt="user" />
                                         {
-                                            authState.user === null ?
+                                            authState?.user === null ?
                                                 <p className="mb-0">
                                                     Login<br /> My Acount
                                                 </p> :
                                                 <p className="mb-0">
-                                                    Welcome{authState.user.firstname}
+                                                    Welcome{authState?.user.firstname}
                                                 </p>
                                         }
 

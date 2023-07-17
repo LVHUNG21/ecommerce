@@ -2,10 +2,17 @@ import React from 'react'
 import watch from '../images/watch.jpg';
 import { Link } from 'react-router-dom'
 import Container from '../components/Container';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { BiArrowBack } from 'react-icons/bi'
-import{useDispatch,userSelector} from  'react-redux'
+import{useDispatch} from  'react-redux'
+// import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import {useFormik} from 'formik'
 import * as yup from 'yup';
+import { config } from '../utils/axiosConfig'; 
+import { createAnOrder } from '../features/user/userSlice';
 let shippingSchema= yup.object({
     firstName:yup.string().required('first name is required'),
     lastName:yup.string().required('Last Name is required'),
@@ -18,9 +25,12 @@ let shippingSchema= yup.object({
   });
 const Checkout = () => {
     const dispatch=useDispatch();
-    const cartState=userSelector(state=>state.auth.cartProdcuts)
+    const cartState=useSelector(state=>state.auth.cartProdcuts)
     const [totalAmount,setTotalAmount]=useState(null);
     const [shippingInfo,setShippingInfo]=useState(null);
+    const [cartProductState,setCartProductState]=useState([]);
+
+    const [paymentInfo,setPaymentInfo]=useState({razorpayPaymentId:'',razorpayOrderId:''});
     useEffect(()=>{
         let sum=0;
         for (let index = 0; index < cartState?.length; index++) {
@@ -36,6 +46,7 @@ const Checkout = () => {
         lastName:'',
         address:'',
         state:'',
+        city:'',
         country:'',
     pincode:'',
     other:'',
@@ -43,8 +54,86 @@ const Checkout = () => {
       validationSchema:shippingSchema,
 
       onSubmit: values => {
+        alert(JSON.stringify(values))
         setShippingInfo(values) 
+        checkOutHandler()
       }});
+      const loadScript=(src)=>{
+        return new Promise((resolve)=>{
+            const script=document.createElement("script");
+            script.src=src;
+            script.onload= ()=>{
+                resolve(true);
+            }
+            script.onerror=()=>{
+                resolve(false);
+            }
+            document.body.appendChild(script);
+        })
+      }
+        useEffect(()=>{
+            let items=[];
+            for (let index = 0; index < cartState?.length; index++) {
+                items.push({product:cartState[index].productId._id,quantity:cartState[index].quantity,color:cartState[index].color._id,price:cartState[index].price})
+                
+            }
+            setCartProductState(items);
+        },[])
+      const checkOutHandler= async()=>{
+        const res=await loadScript("http://checkout.razorpay.com/v1/checkout.js");
+        if(!res){
+            alert("Razorpay SDk failed to load")
+            return;
+        }
+        const result= await axios.post("http://localhost:5000/api/user/order/checkout",{amount:totalAmount+5},config);
+        if(!result){
+            alert("something went wrong");
+        }
+
+        const {amount,id:order_id,currency}=result.data.order;
+        console.log(result)
+          const options = {
+            key: "rzp_test_y60i3RUCXRRuEt", // Enter the Key ID generated from the Dashboard
+            amount: amount,
+            currency: currency,
+            name: "Soumya Corp.",
+            description: "Test Transaction",
+            order_id: order_id,
+            handler: async function (response) {
+                const data = {
+                    orderCreationId: order_id,
+                    razorpayPaymentId: response.razorpay_payment_id,
+                    razorpayOrderId: response.razorpay_order_id,
+              
+                };
+
+        const result = await axios.post("http://localhost:5000/api/user/order/paymentVerification", data,config);
+
+        setPaymentInfo({
+            razorpayPaymentId: response.razorpay_payment_id,
+                    razorpayOrderId: response.razorpay_order_id,
+        })
+       
+        dispatch(createAnOrder({totalPrice:totalAmount,totalPriceAfterDiscount:totalAmount,orderItems:cartProductState,paymentInfo,shippingInfo}));
+
+                alert(result);
+            },
+            prefill: {
+                name: "Soumya Dey",
+                email: "SoumyaDey@example.com",
+                contact: "9999999999",
+            },
+            notes: {
+                address: "Soumya Dey Corporate Office",
+            },
+            theme: {
+                color: "#61dafb",
+            },
+        };
+        const paymentObject=new window.Razorpay(options);
+        paymentObject.open();
+      }
+
     return (
         <>
             <Container class1="checkout-wrapper py-5 home-wrapper-2">
@@ -122,13 +211,13 @@ const Checkout = () => {
                                 </div>
                                 <div className="w-100">
                                     <input type="text" placeholder="Apartment, Suite" className="form-control" 
-                                   onChange={formik.handleChange("other")} 
-                                    onBlur={formik.handleBlur('other')}
-                                     name='other' value={formik.values.other} 
+                                   onChange={formik.handleChange("state")} 
+                                    onBlur={formik.handleBlur('state')}
+                                     name='state' value={formik.values.state} 
                                     />
                                     <div className='error ms-2 my-1'>
                                         {
-                                            formik.touched.other&& formik.errors.other
+                                            formik.touched.state&& formik.errors.state
                                         }
                                     </div>
                                 </div>
@@ -140,22 +229,22 @@ const Checkout = () => {
                                     />
                                     <div className='error ms-2 my-1'>
                                         {
-                                            formik.touched.city&& formik.errors.ctiy
+                                            formik.touched.city&& formik.errors.city
                                         }
                                     </div>
                                 </div>
                                 <div className="flex-grow-1">
                                     <select name="" className="form-control form-select" id=""
-                                   onChange={formik.handleChange('state')}
-                                   onBlur={formik.handleBlur('state')}
-                                        value={formik.values.state}
+                                   onChange={formik.handleChange('country')}
+                                   onBlur={formik.handleBlur('country')}
+                                        value={formik.values.country}
                                     >
                                         <option value="" selected disabled>Select State</option>
                                         <option value="Hanoi">Hanoi</option>
                                     </select>
                                     <div className='error ms-2 my-1'>
                                         {
-                                            formik.touched.state&& formik.errors.state
+                                            formik.touched.country&& formik.errors.country
                                         }
                                     </div>
                                 </div>
@@ -176,7 +265,7 @@ const Checkout = () => {
                                     <div className="d-flex justify-content-between align-items-center">
                                     <Link to='/cart'className="text-dark"><BiArrowBack className="me-2"/>Return to Cart</Link>
                                     <Link to='/cart' className="button">Continue to shipping</Link>
-                                    <button className="button" type='submit'>Place Order</button>
+                                    <button className="button" type='submit' >Place Order</button>
                                     </div>
                                 </div>
                                 </form>

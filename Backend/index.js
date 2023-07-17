@@ -19,11 +19,46 @@ const categoryRouter=require('./routes/categoryRoute');
 const blogcatRouter=require('./routes/blogcatRoute');
 const brandRouter=require('./routes/brandRoute');
 const couponRouter=require('./routes/couponRoute');
-paypal.configure({
-    'mode': 'sandbox', //sandbox or live
-    'client_id': 'AfT_REkfUa62lduFkJPzowdDrxIv3YhZ2Xg6rlT--TDnB5VR7j_fuu_VKvk6FyeADUWNp5ghg2QmA8bn',
-    'client_secret': 'AfT_REkfUa62lduFkJPzowdDrxIv3YhZ2Xg6rlT--TDnB5VR7j_fuu_VKvk6FyeADUWNp5ghg2QmA8bn'
-  });
+// paypal.configure({
+//     'mode': 'sandbox', //sandbox or live
+//     'client_id': 'AfT_REkfUa62lduFkJPzowdDrxIv3YhZ2Xg6rlT--TDnB5VR7j_fuu_VKvk6FyeADUWNp5ghg2QmA8bn',
+//     'client_secret': 'AfT_REkfUa62lduFkJPzowdDrxIv3YhZ2Xg6rlT--TDnB5VR7j_fuu_VKvk6FyeADUWNp5ghg2QmA8bn'
+//   });
+//   var create_payment_json = {
+//     "intent": "sale",
+//     "payer": {
+//         "payment_method": "paypal"
+//     },
+//     "redirect_urls": {
+//         "return_url": "http://localhost:3000/success",
+//         "cancel_url": "http://localhost:3000/cancel",
+//     },
+//     "transactions": [{
+//         "item_list": {
+//             "items": [{
+//                 "name": "Hat Hat",
+//                 "sku": "item",
+//                 "price": "1.00",
+//                 "currency": "USD",
+//                 "quantity": 1
+//             }]
+//         },
+//         "amount": {
+//             "currency": "USD",
+//             "total": "1.00"
+//         },
+//         "description": "This is the payment description."
+//     }]
+// };
+// paypal.payment.create(create_payment_json, function (error, payment) {
+//     if (error) {
+//         throw error;
+//     } else {
+//         console.log("Create Payment Response");
+//         console.log(payment);
+//     }
+// });
+
 // const config=require('./con')
 const cors=require('cors')
 const morgan=require("morgan");
@@ -45,6 +80,7 @@ app.use(morgan());
 // app.use(bodyParser.json());
 
 app.use(cors());
+app.use('/api/u')
 app.use('/api/user',authRouter);
 app.use("/api/product",productRouter);
 app.use("/api/blog",blogRouter);

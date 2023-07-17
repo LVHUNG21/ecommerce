@@ -19,15 +19,15 @@ import { getAllBlogs } from '../features/blogs/blogSlice'
 import {useNavigate} from 'react-router-dom';
 const Home = () => {
 const blogState=useSelector((state)=>state?.blog?.blog);
-const productState=useSelector((state)=>state.product.product);
+const productState=useSelector((state)=>state?.product.product);
 const token = localStorage.getItem('token');
-console.log(`token${token}`)
+// console.log(`token${token}`)
 const navigate=useNavigate();
 const dispatch =useDispatch();
 useEffect(()=>{
   getblogs();
   getProducts();
-})
+},[blogState,productState])
 const getblogs=()=>{
   dispatch(getAllBlogs())
 }

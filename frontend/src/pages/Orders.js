@@ -7,9 +7,7 @@ const Orders = () => {
     const dispatch = useDispatch();
     const orderState = useSelector(state => state?.auth?.getorderedproduct?.orders)
     useEffect(() => {
-        dispatch(getOrders(
-
-        ))
+        dispatch(getOrders())
     })
     return (
         <Container class1='cart-wrapper home-wrapper-2 py-5'>
